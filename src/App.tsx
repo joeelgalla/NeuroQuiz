@@ -1,12 +1,13 @@
-import { useState } from 'react';
-import { Brain, Play, RotateCcw, Trophy, Activity, Zap, Settings2, Image as ImageIcon, Type, ArrowRightLeft, ArrowRight } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { Brain, Play, RotateCcw, Trophy, Activity, Zap, Settings2, Image as ImageIcon, Type, ArrowRightLeft, ArrowRight, Wrench, BookOpen } from 'lucide-react';
 import { questions, Question, Category, shuffle } from './data';
 import { Game } from './Game';
 import { Review } from './Review';
+import { AdminPanel } from './AdminPanel';
 
-type GameState = 'menu' | 'config' | 'playing' | 'review';
-export type Direction = 'forward' | 'reverse';
-export type OptionType = 'text' | 'image';
+type GameState = 'menu' | 'config' | 'playing' | 'review' | 'admin';
+export type Direction = 'forward' | 'reverse' | 'alternating';
+export type DisplayMode = 'text' | 'image' | 'alternating' | 'combined';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState>('menu');
@@ -14,19 +15,48 @@ export default function App() {
   
   // Game Config
   const [direction, setDirection] = useState<Direction>('forward');
-  const [optionType, setOptionType] = useState<OptionType>('text');
+  const [displayMode, setDisplayMode] = useState<DisplayMode>('text');
+  const [studyMode, setStudyMode] = useState(false);
 
   const [missedQuestions, setMissedQuestions] = useState<Question[]>([]);
   const [score, setScore] = useState(0);
   const [totalAnswered, setTotalAnswered] = useState(0);
+  const [customQuestions, setCustomQuestions] = useState<Question[] | undefined>(undefined);
+  const [forcedStudyMode, setForcedStudyMode] = useState(false);
   
   const [highScore, setHighScore] = useState(() => {
     const saved = localStorage.getItem('neuroquiz_highscore');
     return saved ? parseInt(saved, 10) : 0;
   });
 
+  // Context-aware direction labels
+  const directionLabels = useMemo(() => {
+    switch (selectedCategory) {
+      case 'Nerve Root':
+        return {
+          forward: { title: 'Nerve → Actions', desc: 'Name the motor actions for each nerve' },
+          reverse: { title: 'Action → Nerve', desc: 'Identify which nerve performs the action' },
+          alternating: { title: 'Alternating', desc: 'Randomly mix both directions' },
+        };
+      case 'Brain Region':
+        return {
+          forward: { title: 'Function → Region', desc: 'Name the brain region for each function' },
+          reverse: { title: 'Region → Function', desc: 'Identify the function of each brain region' },
+          alternating: { title: 'Alternating', desc: 'Randomly mix both directions' },
+        };
+      default:
+        return {
+          forward: { title: 'Standard', desc: 'Movement → Nerve Root' },
+          reverse: { title: 'Reverse', desc: 'Nerve Root → Movement' },
+          alternating: { title: 'Alternating', desc: 'Randomly mix standard and reverse questions' },
+        };
+    }
+  }, [selectedCategory]);
+
   const handleCategorySelect = (category: Category | 'All') => {
     setSelectedCategory(category);
+    setCustomQuestions(undefined);
+    setForcedStudyMode(false);
     setGameState('config');
   };
 
@@ -41,21 +71,38 @@ export default function App() {
     setScore(finalScore);
     setTotalAnswered(finalTotal);
     setMissedQuestions(missed);
-    if (finalScore > highScore) {
+    if (finalScore > highScore && !customQuestions) {
       setHighScore(finalScore);
       localStorage.setItem('neuroquiz_highscore', finalScore.toString());
     }
+    setCustomQuestions(undefined);
+    setForcedStudyMode(false);
     setGameState('review');
   };
+
+  const handlePracticeMissed = (missed: Question[]) => {
+    setCustomQuestions(missed);
+    setForcedStudyMode(true);
+    setScore(0);
+    setTotalAnswered(0);
+    setMissedQuestions([]);
+    setGameState('playing');
+  };
+
+  if (gameState === 'admin') {
+    return <AdminPanel onBack={() => setGameState('menu')} />;
+  }
 
   if (gameState === 'playing') {
     return (
       <Game 
         category={selectedCategory} 
         direction={direction}
-        optionType={optionType}
+        displayMode={displayMode}
+        studyMode={forcedStudyMode || studyMode}
+        customQuestions={customQuestions}
         onGameOver={handleGameOver} 
-        onQuit={() => setGameState('menu')}
+        onQuit={() => { setCustomQuestions(undefined); setForcedStudyMode(false); setGameState('menu'); }}
       />
     );
   }
@@ -68,6 +115,7 @@ export default function App() {
         missedQuestions={missedQuestions} 
         onPlayAgain={startGame}
         onMenu={() => setGameState('menu')}
+        onPracticeMissed={missedQuestions.length > 0 ? handlePracticeMissed : undefined}
       />
     );
   }
@@ -89,6 +137,35 @@ export default function App() {
           </div>
 
           <div className="space-y-8">
+            {/* Study Mode Toggle */}
+            <div className="space-y-3">
+              <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <BookOpen size={16} /> Mode
+              </label>
+              <button
+                onClick={() => setStudyMode(!studyMode)}
+                className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+                  studyMode ? 'border-emerald-500 bg-emerald-50 shadow-md' : 'border-slate-200 bg-white hover:border-slate-300'
+                }`}
+              >
+                <div className="flex items-center justify-between">
+                  <div>
+                    <div className="font-bold text-lg text-slate-800 mb-1">
+                      {studyMode ? 'Study Mode' : 'Timed Quiz'}
+                    </div>
+                    <div className="text-sm text-slate-500">
+                      {studyMode ? 'No timer • See explanations • Learn at your pace' : '60 second sprint • Race against the clock'}
+                    </div>
+                  </div>
+                  <div className={`w-12 h-7 rounded-full transition-colors flex items-center ${
+                    studyMode ? 'bg-emerald-500 justify-end' : 'bg-slate-300 justify-start'
+                  }`}>
+                    <div className="w-5 h-5 bg-white rounded-full shadow-sm mx-1" />
+                  </div>
+                </div>
+              </button>
+            </div>
+
             {/* Direction Toggle */}
             <div className="space-y-3">
               <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
@@ -99,38 +176,59 @@ export default function App() {
                   onClick={() => setDirection('forward')}
                   className={`p-4 rounded-2xl border-2 text-left transition-all ${direction === 'forward' ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-slate-200 bg-white hover:border-slate-300'}`}
                 >
-                  <div className="font-bold text-lg text-slate-800 mb-1">Standard</div>
-                  <div className="text-sm text-slate-500">Structure <ArrowRight size={14} className="inline mx-1" /> Nerve Root</div>
+                  <div className="font-bold text-lg text-slate-800 mb-1">{directionLabels.forward.title}</div>
+                  <div className="text-sm text-slate-500">{directionLabels.forward.desc}</div>
                 </button>
                 <button 
                   onClick={() => setDirection('reverse')}
                   className={`p-4 rounded-2xl border-2 text-left transition-all ${direction === 'reverse' ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-slate-200 bg-white hover:border-slate-300'}`}
                 >
-                  <div className="font-bold text-lg text-slate-800 mb-1">Reverse</div>
-                  <div className="text-sm text-slate-500">Nerve Root <ArrowRight size={14} className="inline mx-1" /> Structure</div>
+                  <div className="font-bold text-lg text-slate-800 mb-1">{directionLabels.reverse.title}</div>
+                  <div className="text-sm text-slate-500">{directionLabels.reverse.desc}</div>
+                </button>
+                <button 
+                  onClick={() => setDirection('alternating')}
+                  className={`p-4 rounded-2xl border-2 text-left transition-all ${direction === 'alternating' ? 'border-indigo-500 bg-indigo-50 shadow-md' : 'border-slate-200 bg-white hover:border-slate-300'}`}
+                >
+                  <div className="font-bold text-lg text-slate-800 mb-1">{directionLabels.alternating.title}</div>
+                  <div className="text-sm text-slate-500">{directionLabels.alternating.desc}</div>
                 </button>
               </div>
             </div>
 
-            {/* Option Type Toggle */}
+            {/* Display Mode Toggle */}
             <div className="space-y-3">
               <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
-                <Settings2 size={16} /> Option Style
+                <Settings2 size={16} /> Display Mode
               </label>
               <div className="grid grid-cols-2 gap-3">
                 <button 
-                  onClick={() => setOptionType('text')}
-                  className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${optionType === 'text' ? 'border-indigo-500 bg-indigo-50 shadow-md text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}
+                  onClick={() => setDisplayMode('text')}
+                  className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${displayMode === 'text' ? 'border-indigo-500 bg-indigo-50 shadow-md text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}
                 >
                   <Type size={24} />
-                  <span className="font-bold">Text</span>
+                  <span className="font-bold text-center">Text<br/><span className="text-xs font-normal text-slate-500">Only</span></span>
                 </button>
                 <button 
-                  onClick={() => setOptionType('image')}
-                  className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${optionType === 'image' ? 'border-indigo-500 bg-indigo-50 shadow-md text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}
+                  onClick={() => setDisplayMode('image')}
+                  className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${displayMode === 'image' ? 'border-indigo-500 bg-indigo-50 shadow-md text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}
                 >
                   <ImageIcon size={24} />
-                  <span className="font-bold">Images</span>
+                  <span className="font-bold text-center">Image<br/><span className="text-xs font-normal text-slate-500">Only</span></span>
+                </button>
+                <button 
+                  onClick={() => setDisplayMode('alternating')}
+                  className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${displayMode === 'alternating' ? 'border-indigo-500 bg-indigo-50 shadow-md text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}
+                >
+                  <ArrowRightLeft size={24} />
+                  <span className="font-bold text-center">Alternating<br/><span className="text-xs font-normal text-slate-500">Mix Both Modes</span></span>
+                </button>
+                <button 
+                  onClick={() => setDisplayMode('combined')}
+                  className={`p-4 rounded-2xl border-2 flex flex-col items-center justify-center gap-2 transition-all ${displayMode === 'combined' ? 'border-indigo-500 bg-indigo-50 shadow-md text-indigo-700' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300'}`}
+                >
+                  <div className="flex gap-1 items-center"><Type size={18} /><ImageIcon size={18} /></div>
+                  <span className="font-bold text-center">Combined<br/><span className="text-xs font-normal text-slate-500">Study Mode</span></span>
                 </button>
               </div>
             </div>
@@ -141,7 +239,7 @@ export default function App() {
             className="mt-12 w-full bg-indigo-600 text-white p-5 rounded-2xl font-bold text-lg hover:bg-indigo-700 active:scale-95 transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-2"
           >
             <Play size={24} fill="currentColor" />
-            Start Game
+            {studyMode ? 'Start Studying' : 'Start Game'}
           </button>
         </div>
       </div>
@@ -219,7 +317,29 @@ export default function App() {
             </div>
             <Play size={20} className="text-slate-300 group-hover:text-amber-500" />
           </button>
+          
+          <button 
+            onClick={() => handleCategorySelect('Nerve Root')}
+            className="w-full flex items-center justify-between p-5 rounded-2xl bg-white border-2 border-slate-100 hover:border-purple-500 hover:shadow-md transition-all group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <Zap size={20} />
+              </div>
+              <span className="font-bold text-lg">Nerve Roots</span>
+            </div>
+            <Play size={20} className="text-slate-300 group-hover:text-purple-500" />
+          </button>
         </div>
+
+        {/* Admin Editor Link */}
+        <button
+          onClick={() => setGameState('admin')}
+          className="mt-8 mx-auto flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm font-semibold rounded-xl transition-all"
+        >
+          <Wrench size={16} />
+          Asset Editor
+        </button>
       </div>
     </div>
   );

@@ -1,4 +1,4 @@
-import { Trophy, RotateCcw, Home, AlertCircle } from 'lucide-react';
+import { Trophy, RotateCcw, Home, AlertCircle, BookOpen } from 'lucide-react';
 import { Question } from './data';
 
 interface ReviewProps {
@@ -7,9 +7,10 @@ interface ReviewProps {
   missedQuestions: Question[];
   onPlayAgain: () => void;
   onMenu: () => void;
+  onPracticeMissed?: (missed: Question[]) => void;
 }
 
-export function Review({ score, total, missedQuestions, onPlayAgain, onMenu }: ReviewProps) {
+export function Review({ score, total, missedQuestions, onPlayAgain, onMenu, onPracticeMissed }: ReviewProps) {
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0;
   
   let message = "Good effort!";
@@ -34,7 +35,7 @@ export function Review({ score, total, missedQuestions, onPlayAgain, onMenu }: R
         </div>
 
         {/* Actions */}
-        <div className="grid grid-cols-2 gap-4 mb-10">
+        <div className="grid grid-cols-2 gap-4 mb-4">
           <button 
             onClick={onPlayAgain}
             className="flex items-center justify-center gap-2 bg-indigo-600 text-white p-4 rounded-2xl font-bold hover:bg-indigo-700 active:scale-95 transition-all shadow-lg shadow-indigo-200"
@@ -51,6 +52,17 @@ export function Review({ score, total, missedQuestions, onPlayAgain, onMenu }: R
           </button>
         </div>
 
+        {/* Practice Missed Button */}
+        {onPracticeMissed && missedQuestions.length > 0 && (
+          <button
+            onClick={() => onPracticeMissed(missedQuestions)}
+            className="w-full flex items-center justify-center gap-2 bg-emerald-600 text-white p-4 rounded-2xl font-bold hover:bg-emerald-700 active:scale-95 transition-all shadow-lg shadow-emerald-200 mb-10"
+          >
+            <BookOpen size={20} />
+            Practice Missed ({missedQuestions.length})
+          </button>
+        )}
+
         {/* Missed Questions Review */}
         {missedQuestions.length > 0 && (
           <div className="flex-1">
@@ -65,7 +77,7 @@ export function Review({ score, total, missedQuestions, onPlayAgain, onMenu }: R
                   <div className="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-1">{q.category}</div>
                   <div className="font-bold text-slate-800 mb-2">{q.prompt}</div>
                   <div className="flex items-center gap-2 text-emerald-600 font-bold bg-emerald-50 px-3 py-2 rounded-lg inline-flex">
-                    Answer: {q.answer}
+                    Answer: {q.answers ? q.answers.join(', ') : q.answer}
                   </div>
                 </div>
               ))}
