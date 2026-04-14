@@ -12,6 +12,7 @@ export type DisplayMode = 'text' | 'image' | 'alternating' | 'combined';
 export default function App() {
   const [gameState, setGameState] = useState<GameState>('menu');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
+  const [showNerveMenu, setShowNerveMenu] = useState(false);
   
   // Game Config
   const [direction, setDirection] = useState<Direction>('forward');
@@ -133,7 +134,7 @@ export default function App() {
 
           <div className="mb-8">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Configure Game</h2>
-            <p className="text-slate-500 font-medium">Category: <span className="text-indigo-600 font-bold">{selectedCategory}</span></p>
+            <p className="text-slate-500 font-medium">Category: <span className="text-indigo-600 font-bold">{selectedCategory === 'Nerve Root' ? 'Peripheral Nerves (Motor)' : selectedCategory}</span></p>
           </div>
 
           <div className="space-y-8">
@@ -306,29 +307,49 @@ export default function App() {
           </button>
           
           <button 
-            onClick={() => handleCategorySelect('Brain Region')}
-            className="w-full flex items-center justify-between p-5 rounded-2xl bg-white border-2 border-slate-100 hover:border-amber-500 hover:shadow-md transition-all group"
-          >
-            <div className="flex items-center gap-4">
-              <div className="w-10 h-10 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <Brain size={20} />
-              </div>
-              <span className="font-bold text-lg">Brain Regions</span>
-            </div>
-            <Play size={20} className="text-slate-300 group-hover:text-amber-500" />
-          </button>
-          
-          <button 
-            onClick={() => handleCategorySelect('Nerve Root')}
+            onClick={() => setShowNerveMenu(!showNerveMenu)}
             className="w-full flex items-center justify-between p-5 rounded-2xl bg-white border-2 border-slate-100 hover:border-purple-500 hover:shadow-md transition-all group"
           >
             <div className="flex items-center gap-4">
               <div className="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                 <Zap size={20} />
               </div>
-              <span className="font-bold text-lg">Nerve Roots</span>
+              <span className="font-bold text-lg">Peripheral Nerves</span>
             </div>
-            <Play size={20} className="text-slate-300 group-hover:text-purple-500" />
+            <Play size={20} className={`text-slate-300 transition-transform ${showNerveMenu ? 'rotate-90 text-purple-500' : 'group-hover:text-purple-500'}`} />
+          </button>
+
+          {/* Sub-menu for Peripheral Nerves */}
+          {showNerveMenu && (
+            <div className="pl-6 space-y-3 mt-2 mb-4">
+              <button 
+                onClick={() => handleCategorySelect('Nerve Root')}
+                className="w-full flex items-center justify-between p-4 rounded-xl bg-purple-50 border-2 border-purple-100 hover:border-purple-400 hover:bg-purple-100 transition-all font-bold text-purple-700"
+              >
+                <span>Motor</span>
+                <Play size={16} />
+              </button>
+              <button 
+                disabled
+                className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 border-2 border-slate-100 text-slate-400 cursor-not-allowed font-bold"
+              >
+                <span>Sensory</span>
+                <span className="text-xs bg-slate-200 text-slate-500 px-2 py-1 rounded-full uppercase tracking-wider">Coming Soon</span>
+              </button>
+            </div>
+          )}
+          
+          <button 
+            disabled
+            className="w-full flex items-center justify-between p-5 rounded-2xl bg-slate-50 border-2 border-slate-100 opacity-60 cursor-not-allowed group"
+          >
+            <div className="flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full bg-slate-200 text-slate-400 flex items-center justify-center">
+                <Brain size={20} />
+              </div>
+              <span className="font-bold text-lg text-slate-500">Brain Regions</span>
+            </div>
+            <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-1 rounded-full uppercase tracking-wider">Coming Soon</span>
           </button>
         </div>
 
