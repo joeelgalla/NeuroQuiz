@@ -414,7 +414,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
                           return qImage;
                         })()}
                         alt="Anatomical option"
-                        className={`w-full h-full object-cover transition-opacity ${
+                        className={`w-full h-full object-contain transition-opacity ${
                           (selectedAnswer !== null || multiSubmitted) && !isActuallyCorrect && !isSelected && !isMultiSelected ? 'opacity-50' : ''
                         }`}
                       />
