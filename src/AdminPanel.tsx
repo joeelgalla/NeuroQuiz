@@ -67,17 +67,26 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
   // ── Auth handler ──
   const handleLogin = async () => {
     setAuthError('');
+    if (!password.trim()) {
+      setAuthError('Enter the admin password.');
+      return;
+    }
+
     try {
-      // Test auth by hitting list-images with the password
-      const resp = await fetch('/api/list-images');
-      if (resp.ok) {
-        setAuthed(true);
-        const images = await resp.json();
-        setAvailableImages(images);
+      const authResp = await fetch('/api/admin-auth', {
+        method: 'POST',
+        headers: { 'x-admin-password': password },
+      });
+
+      if (!authResp.ok) {
+        setAuthError(authResp.status === 401 ? 'Incorrect password.' : 'Admin API is only available from local dev.');
+        return;
       }
-    } catch {
-      // If list-images doesn't need auth, just store the password for later use
+
       setAuthed(true);
+      await loadImages();
+    } catch {
+      setAuthError('Admin API unavailable. Run npm run dev locally to use the editor.');
     }
   };
 

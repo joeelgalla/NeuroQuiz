@@ -34,17 +34,28 @@ A mobile-friendly quiz app for medical students to practice neuroanatomy — myo
 - **Joseph Elgallad** — Y2 MD student at UofT Temerty. Owns the project, curates anatomical accuracy.
 - **Joe's friend** — drew all illustration assets (myotome action drawings + dermatome zone overlays).
 - **Med school team** — collaborating colleagues being added as GitHub collaborators.
-- **AI agents** — Claude Code (terminal) + Gemini 3.1 Pro (Antigravity sidebar). See workflow below.
+- **AI agents** — Claude Code (terminal), Codex, and Gemini 3.1 Pro (Antigravity sidebar). See workflow below.
 
 ## Development Environment: Antigravity IDE
 
 Built inside **Google's Antigravity IDE** (a VS Code fork with an agent sidebar running Gemini 3.1 Pro). Multi-agent workflow:
 
 - **Claude Code in the integrated terminal** — planning, auditing, data integrity checks, architectural decisions, CLI commands
+- **Codex** — implementation, tests, audits, PWA/analytics work, build/debug loops, and shell-heavy tasks
 - **Gemini agent in the Antigravity sidebar** — rapid code generation, UI iteration, bulk file edits, visual preview
 - **They cannot directly communicate.** No MCP bridge between them. The filesystem IS the bridge.
 - **CLAUDE.md and AGENTS.md are the shared brain.** Antigravity reads `AGENTS.md`; Claude Code reads `CLAUDE.md`. A pre-commit hook keeps them in sync.
 - **Common workflow:** Claude Code plans → Gemini implements → Claude Code audits.
+
+## Multi-Agent Coordination
+
+- `AGENTS.md` and `CLAUDE.md` are synced twins in this repo. Keep them aligned so Claude, Codex, and Antigravity see the same rules.
+- Before editing, run `git status --short` and inspect recent commits. Do not overwrite dirty files you did not create.
+- Check port 3000 before starting `npm run dev`; reuse an existing Vite server when possible.
+- `HANDOFF.md` is required for reviews, plans, coordination, blockers, and other non-code-changing communication.
+- `CHANGELOG.md` is required for actual completed changes to code, config, data, assets, build/deploy rules, or project instructions.
+- `.agent-lock` is not a default requirement. Use a narrow temporary lock only if real overlapping edits or collisions start happening.
+- Codex is well-suited for implementation, audits, tests, PWA work, analytics, and data-shape cleanup. Antigravity remains best for rapid visual/UI iteration.
 
 ## Tech Stack — Use These, Not Alternatives
 

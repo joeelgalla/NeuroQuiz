@@ -9,6 +9,11 @@ type GameState = 'menu' | 'config' | 'playing' | 'review' | 'admin';
 export type Direction = 'forward' | 'reverse' | 'alternating';
 export type DisplayMode = 'text' | 'image' | 'alternating' | 'combined';
 
+function isNativeShell(): boolean {
+  const maybeCapacitor = (window as Window & { Capacitor?: { isNativePlatform?: () => boolean } }).Capacitor;
+  return Boolean(maybeCapacitor?.isNativePlatform?.() ?? maybeCapacitor);
+}
+
 export default function App() {
   const [gameState, setGameState] = useState<GameState>('menu');
   const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
@@ -24,6 +29,7 @@ export default function App() {
   const [totalAnswered, setTotalAnswered] = useState(0);
   const [customQuestions, setCustomQuestions] = useState<Question[] | undefined>(undefined);
   const [forcedStudyMode, setForcedStudyMode] = useState(false);
+  const runningInNativeShell = isNativeShell();
   
   const [highScore, setHighScore] = useState(() => {
     const saved = localStorage.getItem('neuroquiz_highscore');
@@ -353,14 +359,15 @@ export default function App() {
           </button>
         </div>
 
-        {/* Admin Editor Link */}
-        <button
-          onClick={() => setGameState('admin')}
-          className="mt-8 mx-auto flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm font-semibold rounded-xl transition-all"
-        >
-          <Wrench size={16} />
-          Asset Editor
-        </button>
+        {!runningInNativeShell && (
+          <button
+            onClick={() => setGameState('admin')}
+            className="mt-8 mx-auto flex items-center gap-2 px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 hover:text-white text-sm font-semibold rounded-xl transition-all"
+          >
+            <Wrench size={16} />
+            Asset Editor
+          </button>
+        )}
       </div>
     </div>
   );

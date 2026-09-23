@@ -16,6 +16,11 @@ interface GameProps {
 
 const GAME_DURATION = 60;
 
+function questionImage(question?: Question): string | null {
+  if (!question?.image || question.image === 'placeholder') return null;
+  return question.image;
+}
+
 export function Game({ category, direction, displayMode, studyMode = false, customQuestions, onGameOver, onQuit }: GameProps) {
   const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
   const [questionDirections, setQuestionDirections] = useState<('forward'|'reverse')[]>([]);
@@ -125,10 +130,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
   const displayImage = (() => {
     if (!currentQ) return null;
     if (currentDirection === 'forward' && (currentDisplayMode === 'image' || currentDisplayMode === 'combined')) {
-      if (currentQ.image === 'placeholder') {
-        return `https://placehold.co/600x400/f1f5f9/64748b?text=Missing+Image%5Cn${encodeURIComponent(currentQ.prompt)}`;
-      }
-      return currentQ.image || null;
+      return questionImage(currentQ);
     }
     return null;
   })();
@@ -407,17 +409,24 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
                 >
                   {showImageOptions ? (
                     <div className="absolute inset-0 overflow-hidden rounded-2xl">
-                      <img
-                        src={(() => {
-                          const qImage = questions.find(q => q.prompt === option)?.image;
-                          if (!qImage || qImage === 'placeholder') return `https://placehold.co/400x400/e2e8f0/475569?text=${encodeURIComponent(option)}`;
-                          return qImage;
-                        })()}
-                        alt="Anatomical option"
-                        className={`w-full h-full object-contain transition-opacity ${
-                          (selectedAnswer !== null || multiSubmitted) && !isActuallyCorrect && !isSelected && !isMultiSelected ? 'opacity-50' : ''
-                        }`}
-                      />
+                      {(() => {
+                        const optionImage = questionImage(questions.find(q => q.prompt === option));
+                        const dimmed = (selectedAnswer !== null || multiSubmitted) && !isActuallyCorrect && !isSelected && !isMultiSelected;
+                        if (!optionImage) {
+                          return (
+                            <div className={`w-full h-full bg-slate-100 text-slate-600 flex items-center justify-center p-3 text-center text-sm font-bold transition-opacity ${dimmed ? 'opacity-50' : ''}`}>
+                              {option}
+                            </div>
+                          );
+                        }
+                        return (
+                          <img
+                            src={optionImage}
+                            alt="Anatomical option"
+                            className={`w-full h-full object-contain transition-opacity ${dimmed ? 'opacity-50' : ''}`}
+                          />
+                        );
+                      })()}
                       {isMultiSelect && (
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none flex items-end justify-center pb-2">
                            <span className="text-white text-xs font-bold text-center px-1 drop-shadow-md">{option}</span>

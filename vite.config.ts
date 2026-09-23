@@ -37,6 +37,14 @@ function adminApiPlugin(): Plugin {
       };
 
       server.middlewares.use(async (req, res, next) => {
+        // ─── POST /api/admin-auth ───
+        if (req.url === '/api/admin-auth' && req.method === 'POST') {
+          if (!checkAuth(req, res)) return;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+          return;
+        }
+
         // ─── GET /api/list-images ───
         if (req.url === '/api/list-images' && req.method === 'GET') {
           try {
