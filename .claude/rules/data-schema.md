@@ -32,12 +32,12 @@ interface Question {
 | Category | Count | Images |
 |---|---|---|
 | Myotome | 29 | All 29 ✅ |
-| Dermatome | 43 | All 43 ✅ (31 limb + 12 trunk); the 31 limb ones also carry `easyImage` (demarcated variant) |
+| Dermatome | 42 | All 42 ✅ (31 limb + 11 trunk T2–T12; the drawn sub-clavicular "T1" band is not on standard maps and is not quizzed); the 31 limb ones also carry `easyImage` (demarcated variant) |
 | Brain Region | 12 | All placeholder ❌ |
 | Nerve Root (forward) | 13 multi-select | text prompts |
 | Nerve Root (reverse) | 16 single-select | reuses myotome images |
 | Sensory Nerve | 33 | All 33 ✅ (cutaneous distributions, anterior + posterior views) |
-| **Total** | **146** | 121 real + 12 placeholder |
+| **Total** | **145** | 120 real + 12 placeholder |
 
 ## Sensory Nerve mechanics
 
@@ -46,7 +46,10 @@ parentheses), `answer` = nerve name, `image` = the drawing. Forward = area → n
 area. Prompts must be unique within the category because reverse image mode looks images up by prompt.
 The reverse option pool excludes prompts whose question has the same `answer` (one nerve drawn from two
 views must not appear as a "wrong" option). Nerve names follow the motor section where the nerve exists
-there (e.g. "Superficial Fibular (Peroneal) Nerve", "Deep Fibular (Peroneal) Nerve").
+there. Naming rule (Joe, 2026-09-24): modern name first, clinical/older name in brackets, e.g.
+"Superficial Fibular (Superficial Peroneal) Nerve", "Deep Fibular (Deep Peroneal) Nerve". Parent nerve and its
+branches must not both be answer options for one zone (heel = "Tibial Nerve (medial calcaneal branches)", sole =
+"Medial & Lateral Plantar Nerves").
 
 ## Easier Mode (dermatomes)
 

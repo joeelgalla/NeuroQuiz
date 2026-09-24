@@ -109,7 +109,7 @@ NeuroQuiz/
     ├── Game.tsx            # Quiz engine (single + multi-select, timed + study mode)
     ├── Review.tsx          # Post-game: score, missed questions, "Practice Missed"
     ├── AdminPanel.tsx      # Password-protected asset editor (local only)
-    ├── data.ts             # 146 questions across 5 categories + Question interface
+    ├── data.ts             # 145 questions across 5 categories + Question interface
     ├── data.backup.ts      # Auto-created backup on Admin Panel publish — DO NOT TOUCH
     └── index.css           # @import "tailwindcss"
 ```
@@ -164,7 +164,7 @@ The Changelog below is for **major milestones only** — a new system being adde
 ### 2026-09-23 — Sensory Nerves, Trunk Dermatomes, Easier Mode
 
 - New `Sensory Nerve` category: 33 cutaneous-distribution questions (s1–s33) from the illustrator's Aug 30 drawings; the "Sensory" button under Peripheral Nerves is live
-- 12 trunk dermatome questions (d59–d70, T1–T12) with landmark prompts
+- 11 trunk dermatome questions (d60–d70, T2–T12) with landmark prompts; the illustrator's sub-clavicular "T1" band is kept as an image but not quizzed (standard maps put T2 there)
 - `easyImage` field on `Question` + "Easier Mode" toggle on the config screen (demarcated dermatome images with neighbouring borders); Admin Panel, save-data serializer and validator updated in step
 - Reverse-direction option pool now excludes prompts that share the current question's answer
 - Repo moved to the mini (`~/Projects/NeuroQuiz`, canonical since 2026-09-07); the May iOS sprint was snapshotted as its own commit

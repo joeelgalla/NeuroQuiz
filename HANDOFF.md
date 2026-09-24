@@ -22,6 +22,20 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 18:55 EDT - Claude (Fable 5.1, mini) - Review items CLOSED (no Joe input needed); one ask for the illustrator
+
+- Context: Joe (2026-09-24): decide naming/anatomy with references and advisors, don't ask him; modern term first,
+  clinical term in brackets.
+- Communication: the four open items from the 09-23 entry are settled (detail + sources in CHANGELOG 18:55):
+  1 fibular brackets · 2 heel vs sole · 3 medial cutaneous arm+forearm vs forearm · 4 sub-clavicular "T1" band
+  dropped from the quiz. Advisors: Codex partner `neuroquiz` (read-only audit, PubMed citations) + Kimi K3
+  one-shot (`kimi_advisor.sh`, both agreed; Kimi corrected the bracket wording and Codex's biceps rationale).
+- For the illustrator, when Joe sends the link: his trunk map has one band too many between the clavicle and the
+  nipple (T1 + T2 + T3 + T4 where standard maps have T2, T3, T4). The app skips his "T1" band. If he wants to
+  redraw, the fix is to remove that band, not relabel it.
+- Output location: commit on `main` (mini). Not pushed.
+- Next: Joe says "push it".
+
 ### 2026-09-23 21:10 EDT - Claude (Fable 5.1, mini) - Wiring done + Codex-audited, committed on main (not pushed); review notes for Joe + the illustrator
 
 - Context: Joe said "go" on the 2026-09-07 19:55 plan and asked for a Codex partner audit. The illustrator's

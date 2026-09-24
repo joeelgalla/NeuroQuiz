@@ -1,17 +1,17 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-09-24T00:06:25.700Z",
+  "generatedAt": "2026-09-24T23:09:17.968Z",
   "source": "src/data.ts",
   "counts": {
-    "total": 146,
+    "total": 145,
     "byCategory": {
       "Myotome": 29,
-      "Dermatome": 43,
+      "Dermatome": 42,
       "Brain Region": 12,
       "Nerve Root": 29,
       "Sensory Nerve": 33
     },
-    "realImages": 121,
+    "realImages": 120,
     "placeholderImages": 12,
     "multiSelect": 13
   },
@@ -946,21 +946,6 @@
       ],
       "image": "/drawings/Dermatomes Final/Posterior/PLeg S5.png",
       "easyImage": "/drawings/Dermatomes Final/Demarcated/Posterior Limbs/PLegS5D.png"
-    },
-    {
-      "id": "d59",
-      "category": "Dermatome",
-      "prompt": "Anterior chest just below the clavicles (trunk)",
-      "answer": "T1",
-      "options": [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "C4",
-        "T6"
-      ],
-      "image": "/drawings/Dermatomes Final/Demarcated/Trunk/T1.png"
     },
     {
       "id": "d60",
@@ -1930,16 +1915,17 @@
       "id": "s5",
       "category": "Sensory Nerve",
       "prompt": "Medial arm over the biceps and medial forearm down to the wrist (anterior view)",
-      "answer": "Medial Cutaneous Nerve of Forearm",
+      "answer": "Medial Cutaneous Nerves of Arm & Forearm",
       "options": [
-        "Axillary Nerve",
         "Radial Nerve",
         "Musculocutaneous Nerve",
+        "Medial Cutaneous Nerves of Arm & Forearm",
         "Medial Cutaneous Nerve of Forearm",
         "Ulnar Nerve",
         "Median Nerve"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Anterior Limbs/Medial Cutaneous.png"
+      "image": "/drawings/Peripheral Nerves Final/Anterior Limbs/Medial Cutaneous.png",
+      "explanation": "Medial arm = medial cutaneous nerve of arm (medial brachial cutaneous, C8-T1); the uppermost medial arm toward the axilla is intercostobrachial (T2). Medial forearm = medial cutaneous nerve of forearm (medial antebrachial cutaneous)."
     },
     {
       "id": "s6",
@@ -2022,14 +2008,15 @@
       "prompt": "Medial forearm (posterior view)",
       "answer": "Medial Cutaneous Nerve of Forearm",
       "options": [
-        "Axillary Nerve",
         "Radial Nerve",
         "Musculocutaneous Nerve",
+        "Medial Cutaneous Nerves of Arm & Forearm",
         "Medial Cutaneous Nerve of Forearm",
         "Ulnar Nerve",
         "Median Nerve"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/Medial CutaneousP.png"
+      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/Medial CutaneousP.png",
+      "explanation": "Medial cutaneous nerve of forearm = medial antebrachial cutaneous nerve (medial cord of the brachial plexus)."
     },
     {
       "id": "s12",
@@ -2144,7 +2131,7 @@
       "options": [
         "Lateral Sural Cutaneous Nerve",
         "Sural Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Saphenous Nerve",
         "Posterior Femoral Cutaneous Nerve",
         "Tibial Nerve (medial calcaneal branches)"
@@ -2160,7 +2147,7 @@
         "Saphenous Nerve",
         "Sural Nerve",
         "Lateral Sural Cutaneous Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Tibial Nerve (medial calcaneal branches)",
         "Obturator Nerve"
       ],
@@ -2170,31 +2157,33 @@
       "id": "s21",
       "category": "Sensory Nerve",
       "prompt": "Anterolateral lower leg and dorsum of the foot, sparing the first web space (anterior view)",
-      "answer": "Superficial Fibular (Peroneal) Nerve",
+      "answer": "Superficial Fibular (Superficial Peroneal) Nerve",
       "options": [
-        "Superficial Fibular (Peroneal) Nerve",
-        "Deep Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
+        "Deep Fibular (Deep Peroneal) Nerve",
         "Sural Nerve",
         "Saphenous Nerve",
         "Lateral Sural Cutaneous Nerve",
         "Tibial Nerve (medial calcaneal branches)"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Anterior Limbs/Peroneal.png"
+      "image": "/drawings/Peripheral Nerves Final/Anterior Limbs/Peroneal.png",
+      "explanation": "Clinical/older name: superficial peroneal nerve. Note the first web space is spared (deep fibular)."
     },
     {
       "id": "s22",
       "category": "Sensory Nerve",
       "prompt": "Web space between the first and second toes (anterior view)",
-      "answer": "Deep Fibular (Peroneal) Nerve",
+      "answer": "Deep Fibular (Deep Peroneal) Nerve",
       "options": [
-        "Deep Fibular (Peroneal) Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Deep Fibular (Deep Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Sural Nerve",
         "Saphenous Nerve",
         "Medial & Lateral Plantar Nerves",
         "Tibial Nerve (medial calcaneal branches)"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Anterior Limbs/Deep Fibular.png"
+      "image": "/drawings/Peripheral Nerves Final/Anterior Limbs/Deep Fibular.png",
+      "explanation": "Clinical/older name: deep peroneal nerve. Only the first web space."
     },
     {
       "id": "s23",
@@ -2204,7 +2193,7 @@
       "options": [
         "Sural Nerve",
         "Lateral Sural Cutaneous Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Saphenous Nerve",
         "Tibial Nerve (medial calcaneal branches)",
         "Medial & Lateral Plantar Nerves"
@@ -2264,7 +2253,7 @@
       "options": [
         "Lateral Sural Cutaneous Nerve",
         "Sural Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Saphenous Nerve",
         "Posterior Femoral Cutaneous Nerve",
         "Tibial Nerve (medial calcaneal branches)"
@@ -2275,16 +2264,17 @@
       "id": "s28",
       "category": "Sensory Nerve",
       "prompt": "Lateral aspect of the lower leg above the ankle (posterior view)",
-      "answer": "Superficial Fibular (Peroneal) Nerve",
+      "answer": "Superficial Fibular (Superficial Peroneal) Nerve",
       "options": [
-        "Superficial Fibular (Peroneal) Nerve",
-        "Deep Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
+        "Deep Fibular (Deep Peroneal) Nerve",
         "Sural Nerve",
         "Saphenous Nerve",
         "Lateral Sural Cutaneous Nerve",
         "Tibial Nerve (medial calcaneal branches)"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/PeronealP.png"
+      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/PeronealP.png",
+      "explanation": "Clinical/older name: superficial peroneal nerve."
     },
     {
       "id": "s29",
@@ -2295,7 +2285,7 @@
         "Saphenous Nerve",
         "Sural Nerve",
         "Lateral Sural Cutaneous Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Tibial Nerve (medial calcaneal branches)",
         "Obturator Nerve"
       ],
@@ -2310,7 +2300,7 @@
         "Saphenous Nerve",
         "Sural Nerve",
         "Lateral Sural Cutaneous Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Tibial Nerve (medial calcaneal branches)",
         "Obturator Nerve"
       ],
@@ -2324,7 +2314,7 @@
       "options": [
         "Sural Nerve",
         "Lateral Sural Cutaneous Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve",
         "Saphenous Nerve",
         "Tibial Nerve (medial calcaneal branches)",
         "Medial & Lateral Plantar Nerves"
@@ -2341,10 +2331,11 @@
         "Sural Nerve",
         "Medial & Lateral Plantar Nerves",
         "Saphenous Nerve",
-        "Superficial Fibular (Peroneal) Nerve",
-        "Deep Fibular (Peroneal) Nerve"
+        "Superficial Fibular (Superficial Peroneal) Nerve",
+        "Deep Fibular (Deep Peroneal) Nerve"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/Tibial.png"
+      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/Tibial.png",
+      "explanation": "Heel skin is supplied by the medial calcaneal branches of the tibial nerve; the lateral edge of the heel gets a sural (lateral calcaneal) contribution."
     },
     {
       "id": "s33",
@@ -2356,10 +2347,11 @@
         "Tibial Nerve (medial calcaneal branches)",
         "Sural Nerve",
         "Saphenous Nerve",
-        "Deep Fibular (Peroneal) Nerve",
-        "Superficial Fibular (Peroneal) Nerve"
+        "Deep Fibular (Deep Peroneal) Nerve",
+        "Superficial Fibular (Superficial Peroneal) Nerve"
       ],
-      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/Plantar.png"
+      "image": "/drawings/Peripheral Nerves Final/Posterior Limbs/Plantar.png",
+      "explanation": "The medial and lateral plantar nerves are the terminal branches of the tibial nerve."
     }
   ]
 }

@@ -22,6 +22,21 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 18:55 EDT - Claude (Fable 5.1, mini) - Naming decisions settled with two advisors; trunk T1 question dropped
+
+- Files changed: `src/data.ts` (d59 removed → 145 questions; s5 answer "Medial Cutaneous Nerves of Arm & Forearm",
+  upper-limb option pools rebuilt around the two medial labels; fibular buttons "Superficial Fibular (Superficial
+  Peroneal) Nerve" / "Deep Fibular (Deep Peroneal) Nerve"; study-mode explanations on s5, s11, s21, s22, s28, s32,
+  s33), `ios/Shared/quiz-data.json` regenerated, `.claude/rules/data-schema.md`, `CLAUDE.md`/`AGENTS.md`.
+- What changed: Joe's rule = modern name first, clinical/older name in brackets, and decide anatomy questions with
+  references + advisors instead of asking him. Codex partner (PubMed-cited) and Kimi K3 (independent one-shot)
+  both endorsed: fibular pair as above; heel = tibial (medial calcaneal branches), sole = medial & lateral plantar;
+  front-view medial drawing = arm + forearm (medial brachial + antebrachial cutaneous), back view = forearm only;
+  the drawn band directly below the clavicles is T2 on every standard map (Keegan & Garrett, Foerster, Lee 2008,
+  ASIA), so the "T1" trunk question is removed rather than relabelled (relabelling would duplicate T2). Image
+  `Demarcated/Trunk/T1.png` stays on disk, unreferenced.
+- Verification: tsc clean · validate:data 145 q, 120 real + 12 placeholder, 0/0 · build OK · reference audit 0 missing.
+
 ### 2026-09-23 21:10 EDT - Claude (Fable 5.1, mini) - Sensory Nerve category, trunk dermatomes, Easier Mode
 
 - Files changed: `src/data.ts` (Category union + `easyImage` field; `easyImage` on d28-d58; +12 trunk
