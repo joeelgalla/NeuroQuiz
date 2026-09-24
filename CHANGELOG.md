@@ -22,6 +22,17 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 20:25 EDT - Claude (Fable 5.1, mini) - Audit-round content fixes + reverse-mode overlap rule
+
+- Files changed: `src/data.ts` (22 questions reworded/relabelled per council + Codex image pass; Intercostobrachial
+  and Ilioinguinal added as distractors; s5/s11 `reverseGroup`), `src/Game.tsx` (`answerAtoms`/`answersOverlap`:
+  reverse pool excludes any question whose answer shares a root or equals the current answer),
+  `ios/Shared/quiz-data.json` regenerated. (No image edited: the stray label fragment in `Lateral Sural.png` is
+  left for the illustrator to re-export.)
+- What changed: see HANDOFF 20:25 for the audit outcomes behind each edit.
+- Verification: tsc clean · validate:data 145 q, 120 real + 12 placeholder, 0/0 · build OK · mechanical
+  reverse-mode check clean · live E2E sweep clean (pre-fix build).
+
 ### 2026-09-24 18:55 EDT - Claude (Fable 5.1, mini) - Naming decisions settled with two advisors; trunk T1 question dropped
 
 - Files changed: `src/data.ts` (d59 removed → 145 questions; s5 answer "Medial Cutaneous Nerves of Arm & Forearm",

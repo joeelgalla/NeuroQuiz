@@ -17,6 +17,25 @@ interface GameProps {
 
 const GAME_DURATION = 60;
 
+function answerAtoms(answer: string): string[] {
+  const atoms: string[] = [];
+  for (const part of answer.split(',').map(s => s.trim()).filter(Boolean)) {
+    const range = part.match(/^([CTLS])(\d+)-([CTLS])(\d+)$/);
+    if (range && range[1] === range[3]) {
+      for (let i = Number(range[2]); i <= Number(range[4]); i++) atoms.push(`${range[1]}${i}`);
+    } else {
+      atoms.push(part);
+    }
+  }
+  return atoms;
+}
+
+function answersOverlap(a: string, b: string): boolean {
+  if (a === b) return true;
+  const atomsB = new Set(answerAtoms(b));
+  return answerAtoms(a).some(atom => atomsB.has(atom));
+}
+
 function questionImage(question?: Question, easyMode = false): string | null {
   if (!question?.image || question.image === 'placeholder') return null;
   if (easyMode && question.easyImage) return question.easyImage;
@@ -277,7 +296,9 @@ export function Game({ category, direction, displayMode, studyMode = false, easy
       // (two L5 images, one nerve drawn from two views: they would be a second correct option marked wrong).
       // Prefer questions whose option pool overlaps ours (same limb/region) so distractors stay plausible;
       // fall back to the whole category when that leaves too few.
-      const sameCategory = questions.filter(q => q.category === currentQ.category && q.answer !== currentQ.answer);
+      // "Same answer" is judged on answer atoms so root lists overlap too: showing "C8" must not offer a
+      // "C8, T1" action as a wrong option, and "C6-C8" expands to C6, C7, C8. Nerve names compare whole.
+      const sameCategory = questions.filter(q => q.category === currentQ.category && !answersOverlap(q.answer, currentQ.answer));
       const related = sameCategory.filter(q => q.options.some(o => currentQ.options.includes(o)));
       pool = (related.length >= targetCount - 1 ? related : sameCategory).map(q => q.prompt);
     } else {

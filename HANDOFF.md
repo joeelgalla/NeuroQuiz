@@ -22,6 +22,38 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 20:25 EDT - Claude (Fable 5.1, mini) - Post-deploy audit round: results + what changed
+
+- Context: Joe asked for every layer of checking before he sends the illustrator the link.
+- Layers run and outcomes:
+  1. Council (Fable + GPT-5.6 + Kimi K3 as sealed reviewers, Opus brief check) on the 44 new questions' TEXT.
+     Convergence: the two medial-cutaneous labels must never share an option list (s5/s11); s15 text described
+     ilioinguinal territory, not genitofemoral; s25/s28/s33 had a second defensible button; d66/d67/d69/d70 landmark
+     wording loose; "Anterior Femoral Cutaneous Nerve" and "Tibial Nerve (medial calcaneal branches)" renamed to
+     "Anterior Cutaneous Branches of Femoral Nerve" / "Medial Calcaneal Branches of Tibial Nerve" (brackets stay
+     reserved for clinical synonyms). All applied. Split: Codex-in-council accepted the combined arm+forearm
+     label, the Codex repo partner (with the image) preferred reverting to "of Forearm" for both views; the
+     combined label stays (the front drawing shades a real medial-arm strip) and Intercostobrachial Nerve replaces
+     the forearm-only distractor; s5+s11 share `reverseGroup: 'medial-cutaneous'` so one appears per session.
+     Brief check (Opus): text-only audit cannot certify the drawings (covered by layer 2) and the course's
+     dermatome reference is undeclared → CEO question `neuroquiz-dermatome-map` queued for Joe (Telegram).
+  2. Codex partner image-versus-text pass over all 44 images + all 31 easier-mode pairs + 4 masters: 31/31 pairs
+     match; wording fixes applied to s1, s10, s12, s17, s25, s31, s33, d66, d67, d69; two ARTWORK findings:
+     `Lateral Sural.png` carries a stray "erve" label fragment in the left margin (his export artefact; NOT edited here,
+     the harness refuses in-place edits of his art; illustrator to re-export), and `Peroneal.png` shades the dorsal toe tips (plantar-digital territory) — left as drawn,
+     explanation now states the exception; ask the illustrator to trim if he redraws.
+  3. Live E2E sweep (Playwright, 4 viewports, every category × direction × display): 135/135 image files served
+     HTTP 200, 44 flows stepped through, no page errors; three flagged flows re-checked with load-waits → clean.
+  4. Local code review (high): no code defects; six ledger-hygiene findings fixed in eddb857.
+  5. Mechanical reverse-mode check: root-list answers overlapped in Myotomes (showing "C8" could offer a "C8, T1"
+     action as a wrong option — pre-existing since April). Fixed in `src/Game.tsx` (`answersOverlap`, atoms with
+     range expansion); check now reports no overlapping distractors and no thin pools across all 145 questions.
+  6. Cloud ultra review: PR #1 (sensory-wiring → pre-sensory, review-only) opened for Joe to run
+     `/code-review ultra 1`. Gemini visual review of the 4-viewport screenshots: pending at the time of writing.
+- Output location: commit on `main` (mini), NOT pushed; Joe decides the push.
+- Next: Joe: "push it" → send the illustrator the link with the two artwork notes (stray "erve" text on Lateral
+  Sural, please re-export; dorsal toe tips on Peroneal) and the trunk-band note.
+
 ### 2026-09-24 19:22 EDT - Claude (Fable 5.1, mini) - PUSHED + LIVE
 
 - Context: Joe: "push it".
