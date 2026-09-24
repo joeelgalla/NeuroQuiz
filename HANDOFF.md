@@ -22,6 +22,54 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-23 21:10 EDT - Claude (Fable 5.1, mini) - Wiring done + Codex-audited, committed on main (not pushed); review notes for Joe + the illustrator
+
+- Context: Joe said "go" on the 2026-09-07 19:55 plan and asked for a Codex partner audit. The illustrator's
+  Sep 7 WhatsApp reply settled item 1: demarcated images = an easier mode, so they are a toggle, not a swap.
+- Communication: content decisions that deserve a human check before the classmate test (none block the build):
+  1. Nerve labels follow the existing motor section: illustrator's "Peroneal" → "Superficial Fibular (Peroneal)
+     Nerve" (his drawing = anterolateral leg + dorsum of foot minus the first web space), "Deep Fibular" →
+     "Deep Fibular (Peroneal) Nerve". "Plantar" → "Plantar Nerves (Medial & Lateral)". "Lateral Sural" →
+     "Lateral Sural Cutaneous Nerve". "Medial Cutaneous" kept as his label "Medial Cutaneous Nerve of Forearm"
+     although the drawing also covers the medial upper arm (medial brachial cutaneous territory).
+  2. Trunk T1 is drawn as the band directly below the clavicles (Trunk Master.png) and the T1 question follows
+     the drawing. Many charts give that band to T2/C4; Joe to confirm with the illustrator or re-label.
+  3. Sensory prompts describe the highlighted skin as drawn, with the view in parentheses; the labelled
+     master sheets (4) are reference only and are not quiz questions.
+  4. Explanations were added only for the canonical trunk landmarks (T2 sternal angle, T4 nipple, T6 xiphoid,
+     T10 umbilicus, T12 above the inguinal ligament). Everything else stays empty, as before.
+- Verified in the built app (headless Chrome, 390x844 + 1280x800, `vite preview`): Sensory button live; sensory
+  forward shows the drawing with 6 nerve options; Easier Mode toggle appears for Dermatome/All only, persists in
+  localStorage, and swaps in the demarcated image; sensory reverse shows 4 image tiles from the same limb; zero
+  page errors (only the pre-existing favicon 404).
+- Follow-ups noticed, NOT done (out of scope tonight): the Dermatome config screen still shows the generic
+  direction labels "Movement → Nerve Root" (should read "Area → Nerve Root"); no favicon/PWA manifest.
+- Codex partner audit (partnership `neuroquiz`, seat codex, read-only, via
+  `~/AgentConfig/shared/interop/scripts/partner.sh`; ~2.2M input tokens, one turn). It re-ran tsc, the validator
+  (directly with node; `npm run validate:data` hit a tsx IPC `listen EPERM` inside its sandbox, not a repo bug),
+  the build, an in-memory round-trip of the Admin Panel serializer (146/146 preserved, emitted source type-checks),
+  the iOS exporter, and 912 mocked-hook gameplay cases. Findings and what was done:
+  1. BLOCKER: "Tibial Nerve" and "Plantar Nerves" competed as answers for the sole/heel (plantar nerves ARE tibial
+     branches). FIXED: heel question answers "Tibial Nerve (medial calcaneal branches)", sole answers "Medial &
+     Lateral Plantar Nerves"; plain "Tibial Nerve" no longer appears in any sensory option list.
+  2. SHOULD-FIX: s11 prompt said upper arm + forearm but `Medial CutaneousP.png` shades the forearm only. FIXED
+     ("Medial forearm (posterior view)"); s5 now says "medial arm over the biceps and medial forearm".
+  3. SHOULD-FIX: s30 "medial side of the heel" over-claimed a saphenous territory. FIXED ("narrow strip over the
+     medial ankle and medial border of the foot"); s32 heel prompt now says "posteromedial".
+  4. SHOULD-FIX (SwiftUI prototype only): hardcoded 4-category list hid Sensory Nerve; `QuizQuestion` lacked
+     `easyImage`. FIXED in `AppView.swift` + `QuizData.swift`, `ios/Shared/quiz-data.json` regenerated (146 q);
+     the prototype has no Easier Mode toggle (documented in `ios/README.md`); `xcodebuild` (Xcode 27.0 beta 5,
+     simulator, no signing) BUILD SUCCEEDED on the mini. Not affecting the Capacitor shell.
+  5. NIT: s14 omitted the dorsal thumb tip shown in `MedianP.png`. FIXED; s10 now says "base of the thumb".
+  6. NIT: reverse image tiles looked prompts up globally while the validator checks per category. FIXED: lookup
+     is category-scoped first, with the global fallback kept for motor-action tiles that reuse Myotome images.
+  7. NIT: records overstated completion (this entry's old title) and CLAUDE.md's explanation claim. FIXED.
+  T1: Codex agrees it should stay a documented anatomy-review question (drawing-faithful), not an auto relabel.
+  Verdict after fixes (self-verified, not re-audited): tsc clean, validator 0/0, build OK, headless walkthrough
+  green.
+- Output location: working tree → commit on `main` (mini). Nothing pushed.
+- Next: Joe says "push it" → Vercel deploys → send the illustrator the link with the QA asks above.
+
 ### 2026-09-23 18:40 EDT - Claude (Fable 5.1, mini) - Image inventory VERIFIED against Drive and the live sheet
 
 - Context: Joe asked exactly which images the illustrator changed, with evidence, not inference.

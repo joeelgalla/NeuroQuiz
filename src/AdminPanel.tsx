@@ -6,13 +6,14 @@ interface AdminPanelProps {
   onBack: () => void;
 }
 
-const CATEGORIES: Category[] = ['Myotome', 'Dermatome', 'Brain Region', 'Nerve Root'];
+const CATEGORIES: Category[] = ['Myotome', 'Dermatome', 'Brain Region', 'Nerve Root', 'Sensory Nerve'];
 
 const CATEGORY_COLORS: Record<Category, { bg: string; text: string; border: string; badge: string }> = {
   'Myotome': { bg: 'bg-emerald-50', text: 'text-emerald-700', border: 'border-emerald-200', badge: 'bg-emerald-100 text-emerald-700' },
   'Dermatome': { bg: 'bg-sky-50', text: 'text-sky-700', border: 'border-sky-200', badge: 'bg-sky-100 text-sky-700' },
   'Brain Region': { bg: 'bg-amber-50', text: 'text-amber-700', border: 'border-amber-200', badge: 'bg-amber-100 text-amber-700' },
   'Nerve Root': { bg: 'bg-purple-50', text: 'text-purple-700', border: 'border-purple-200', badge: 'bg-purple-100 text-purple-700' },
+  'Sensory Nerve': { bg: 'bg-rose-50', text: 'text-rose-700', border: 'border-rose-200', badge: 'bg-rose-100 text-rose-700' },
 };
 
 export function AdminPanel({ onBack }: AdminPanelProps) {
@@ -111,7 +112,7 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
 
   const addQuestion = () => {
     const catQuestions = allQuestions.filter(q => q.category === selectedCategory);
-    const prefix = selectedCategory === 'Myotome' ? 'm' : selectedCategory === 'Dermatome' ? 'd' : selectedCategory === 'Brain Region' ? 'b' : 'n';
+    const prefix = selectedCategory === 'Myotome' ? 'm' : selectedCategory === 'Dermatome' ? 'd' : selectedCategory === 'Brain Region' ? 'b' : selectedCategory === 'Sensory Nerve' ? 's' : 'n';
     const maxNum = catQuestions.reduce((max, q) => {
       const num = parseInt(q.id.slice(prefix.length));
       return isNaN(num) ? max : Math.max(max, num);
@@ -162,6 +163,7 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
             subfolder: selectedCategory === 'Myotome' ? 'Myotomes Final' :
                        selectedCategory === 'Dermatome' ? 'Dermatomes Final' :
                        selectedCategory === 'Brain Region' ? 'Brain Regions' :
+                       selectedCategory === 'Sensory Nerve' ? 'Peripheral Nerves Final' :
                        'Nerve Roots',
           }),
         });
@@ -589,6 +591,20 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
                     <Plus size={14} /> Add Option
                   </button>
                 </div>
+              </div>
+
+              {/* Easy-mode image: optional alternate image shown when "Easier Mode" is on (dermatomes) */}
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                  Easy-Mode Image (optional)
+                </label>
+                <input
+                  type="text"
+                  value={selectedQuestion.easyImage || ''}
+                  onChange={e => updateQuestion(selectedQuestion.id, { easyImage: e.target.value || undefined })}
+                  className="w-full px-3 py-2 bg-white border border-slate-200 rounded-lg text-sm font-mono focus:outline-none focus:ring-2 focus:ring-indigo-300"
+                  placeholder="/drawings/Dermatomes Final/Demarcated/Anterior Limbs/AArmC6D.png"
+                />
               </div>
 
               {/* Explanation (for Study Mode) */}

@@ -161,6 +161,9 @@ function adminApiPlugin(): Plugin {
               if (q.image) {
                 parts.push(`image: ${JSON.stringify(q.image)}`);
               }
+              if (q.easyImage) {
+                parts.push(`easyImage: ${JSON.stringify(q.easyImage)}`);
+              }
               if (q.answers) {
                 parts.push(`answers: ${JSON.stringify(q.answers)}`);
               }
@@ -182,7 +185,7 @@ function adminApiPlugin(): Plugin {
               return parts.join(', ') + ' }';
             }).join(',\n');
 
-            const fileContent = `export type Category = 'Myotome' | 'Dermatome' | 'Brain Region' | 'Nerve Root';
+            const fileContent = `export type Category = 'Myotome' | 'Dermatome' | 'Brain Region' | 'Nerve Root' | 'Sensory Nerve';
 
 export interface Question {
   id: string;
@@ -191,6 +194,7 @@ export interface Question {
   answer: string;
   options: string[];
   image?: string;
+  easyImage?: string;        // Optional easier variant of image (dermatomes: neighbouring borders drawn)
   // Multi-select support (nerve motor questions)
   answers?: string[];
   multiSelect?: boolean;

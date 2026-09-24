@@ -20,6 +20,7 @@ struct QuizQuestion: Decodable, Identifiable, Hashable {
     let answer: String
     let options: [String]
     let image: String?
+    let easyImage: String?   // web "Easier Mode" variant; the prototype has no toggle and ignores it
     let answers: [String]?
     let multiSelect: Bool?
     let studyDirection: String?

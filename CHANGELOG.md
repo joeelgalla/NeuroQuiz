@@ -22,6 +22,33 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-23 21:10 EDT - Claude (Fable 5.1, mini) - Sensory Nerve category, trunk dermatomes, Easier Mode
+
+- Files changed: `src/data.ts` (Category union + `easyImage` field; `easyImage` on d28-d58; +12 trunk
+  dermatomes d59-d70; +33 sensory nerve questions s1-s33 → 146 questions), `src/Game.tsx` (easyMode
+  threading incl. reverse image tiles; reverse pool excludes same-answer prompts), `src/App.tsx`
+  (Easier Mode toggle + localStorage `neuroquiz_easy_dermatomes`; Sensory button live; direction labels
+  + config header for 'Sensory Nerve'), `src/AdminPanel.tsx` (category list/colours, id prefix `s`,
+  upload subfolder, Easy-Mode Image input), `vite.config.ts` (serializer emits `easyImage`; emitted
+  Category union + interface updated), `scripts/validate-data.ts` (category, easyImage path check,
+  duplicate-prompt warning), `.claude/rules/data-schema.md`, `.claude/rules/question-authoring.md`,
+  `CLAUDE.md`/`AGENTS.md` (structure, gaps, changelog). New tracked assets: the 85 drawings imported
+  2026-09-07 under `public/drawings/Dermatomes Final/Demarcated/` and `public/drawings/Peripheral Nerves Final/`.
+- What changed: the three items the illustrator delivered on Aug 30 are wired in. Demarcated dermatomes
+  are an opt-in "Easier Mode" (his words: "if users want an easier mode"), not a replacement.
+- Verification (mini): `npx tsc --noEmit` clean · `npm run validate:data` 146 questions, 121 real +
+  12 placeholder images, 0 errors 0 warnings · reference audit: 0 missing paths, 31/31 easyImage paths
+  resolve, 146 unique ids, 0 answer/option mismatches · `npm run build` OK (424.7 kB JS) · Codex partner
+  read-only audit (see HANDOFF, same timestamp).
+- Post-audit fixes (Codex partner, see HANDOFF 21:10): sensory labels "Tibial Nerve (medial calcaneal
+  branches)" / "Medial & Lateral Plantar Nerves" (s32/s33 no longer compete); prompts s5, s10, s11, s14, s30, s32
+  corrected against the drawings; reverse image lookup category-scoped in `src/Game.tsx`; reverse distractors
+  now prefer questions sharing an option pool (same limb); config toggle off-state renamed "Target Only".
+  SwiftUI prototype: `ios/SwiftUIPrototype/.../AppView.swift` lists Sensory Nerve, `QuizData.swift` decodes
+  `easyImage`; `ios/Shared/quiz-data.json` regenerated (146 questions); `ios/README.md` note.
+- Not done: push (needs Joe's "push it"); Brain Region art (still 12 placeholders); Dermatome config-screen
+  direction labels still read "Movement → Nerve Root" (pre-existing).
+
 ### 2026-09-07 20:40 EDT - Claude (Fable 5.1, mini) - Repo moved to the mini; mini copy is canonical
 
 - Files changed: none in the tree itself. New on the mini: `node_modules/` (from `npm ci`),

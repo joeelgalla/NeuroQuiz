@@ -42,7 +42,7 @@ struct CategoryListView: View {
     let export: QuizExport
 
     private var categories: [String] {
-        let preferred = ["Myotome", "Dermatome", "Nerve Root", "Brain Region"]
+        let preferred = ["Myotome", "Dermatome", "Nerve Root", "Sensory Nerve", "Brain Region"]
         let available = Set(export.questions.map(\.category))
         return preferred.filter { available.contains($0) }
     }
@@ -312,7 +312,14 @@ struct BundleImage: View {
 }
 
 private func categoryTitle(_ category: String) -> String {
-    category == "Nerve Root" ? "Peripheral Nerves" : category
+    switch category {
+    case "Nerve Root":
+        "Peripheral Nerves (Motor)"
+    case "Sensory Nerve":
+        "Peripheral Nerves (Sensory)"
+    default:
+        category
+    }
 }
 
 private func symbolName(for category: String) -> String {
@@ -323,6 +330,8 @@ private func symbolName(for category: String) -> String {
         "bolt.heart"
     case "Nerve Root":
         "point.3.connected.trianglepath.dotted"
+    case "Sensory Nerve":
+        "hand.raised"
     case "Brain Region":
         "brain.head.profile"
     default:
@@ -338,6 +347,8 @@ private func symbolColor(for category: String) -> Color {
         .cyan
     case "Nerve Root":
         .purple
+    case "Sensory Nerve":
+        .pink
     case "Brain Region":
         .orange
     default:

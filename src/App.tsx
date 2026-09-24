@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { Brain, Play, RotateCcw, Trophy, Activity, Zap, Settings2, Image as ImageIcon, Type, ArrowRightLeft, ArrowRight, Wrench, BookOpen } from 'lucide-react';
+import { Brain, Play, RotateCcw, Trophy, Activity, Zap, Settings2, Image as ImageIcon, Type, ArrowRightLeft, ArrowRight, Wrench, BookOpen, Layers } from 'lucide-react';
 import { questions, Question, Category, shuffle } from './data';
 import { Game } from './Game';
 import { Review } from './Review';
@@ -23,6 +23,15 @@ export default function App() {
   const [direction, setDirection] = useState<Direction>('forward');
   const [displayMode, setDisplayMode] = useState<DisplayMode>('text');
   const [studyMode, setStudyMode] = useState(false);
+  // Easier dermatome images (neighbouring borders drawn in). Persisted per device.
+  const [easyMode, setEasyMode] = useState(() => localStorage.getItem('neuroquiz_easy_dermatomes') === '1');
+  const toggleEasyMode = () => {
+    setEasyMode(prev => {
+      const next = !prev;
+      localStorage.setItem('neuroquiz_easy_dermatomes', next ? '1' : '0');
+      return next;
+    });
+  };
 
   const [missedQuestions, setMissedQuestions] = useState<Question[]>([]);
   const [score, setScore] = useState(0);
@@ -43,6 +52,12 @@ export default function App() {
         return {
           forward: { title: 'Nerve → Actions', desc: 'Name the motor actions for each nerve' },
           reverse: { title: 'Action → Nerve', desc: 'Identify which nerve performs the action' },
+          alternating: { title: 'Alternating', desc: 'Randomly mix both directions' },
+        };
+      case 'Sensory Nerve':
+        return {
+          forward: { title: 'Area → Nerve', desc: 'Name the nerve that supplies the highlighted skin' },
+          reverse: { title: 'Nerve → Area', desc: 'Pick the skin area supplied by each nerve' },
           alternating: { title: 'Alternating', desc: 'Randomly mix both directions' },
         };
       case 'Brain Region':
@@ -107,6 +122,7 @@ export default function App() {
         direction={direction}
         displayMode={displayMode}
         studyMode={forcedStudyMode || studyMode}
+        easyMode={easyMode}
         customQuestions={customQuestions}
         onGameOver={handleGameOver} 
         onQuit={() => { setCustomQuestions(undefined); setForcedStudyMode(false); setGameState('menu'); }}
@@ -140,7 +156,7 @@ export default function App() {
 
           <div className="mb-8">
             <h2 className="text-3xl font-extrabold text-slate-900 mb-2">Configure Game</h2>
-            <p className="text-slate-500 font-medium">Category: <span className="text-indigo-600 font-bold">{selectedCategory === 'Nerve Root' ? 'Peripheral Nerves (Motor)' : selectedCategory}</span></p>
+            <p className="text-slate-500 font-medium">Category: <span className="text-indigo-600 font-bold">{selectedCategory === 'Nerve Root' ? 'Peripheral Nerves (Motor)' : selectedCategory === 'Sensory Nerve' ? 'Peripheral Nerves (Sensory)' : selectedCategory}</span></p>
           </div>
 
           <div className="space-y-8">
@@ -172,6 +188,37 @@ export default function App() {
                 </div>
               </button>
             </div>
+
+            {/* Easier dermatome images (only where dermatome questions can appear) */}
+            {(selectedCategory === 'Dermatome' || selectedCategory === 'All') && (
+              <div className="space-y-3">
+                <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                  <Layers size={16} /> Dermatome Images
+                </label>
+                <button
+                  onClick={toggleEasyMode}
+                  className={`w-full p-4 rounded-2xl border-2 text-left transition-all ${
+                    easyMode ? 'border-sky-500 bg-sky-50 shadow-md' : 'border-slate-200 bg-white hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <div className="font-bold text-lg text-slate-800 mb-1">
+                        {easyMode ? 'Easier Mode' : 'Target Only'}
+                      </div>
+                      <div className="text-sm text-slate-500">
+                        {easyMode ? 'Neighbouring dermatome borders are drawn in' : 'Only the target dermatome is shaded'}
+                      </div>
+                    </div>
+                    <div className={`w-12 h-7 rounded-full transition-colors flex items-center ${
+                      easyMode ? 'bg-sky-500 justify-end' : 'bg-slate-300 justify-start'
+                    }`}>
+                      <div className="w-5 h-5 bg-white rounded-full shadow-sm mx-1" />
+                    </div>
+                  </div>
+                </button>
+              </div>
+            )}
 
             {/* Direction Toggle */}
             <div className="space-y-3">
@@ -336,11 +383,11 @@ export default function App() {
                 <Play size={16} />
               </button>
               <button 
-                disabled
-                className="w-full flex items-center justify-between p-4 rounded-xl bg-slate-50 border-2 border-slate-100 text-slate-400 cursor-not-allowed font-bold"
+                onClick={() => handleCategorySelect('Sensory Nerve')}
+                className="w-full flex items-center justify-between p-4 rounded-xl bg-purple-50 border-2 border-purple-100 hover:border-purple-400 hover:bg-purple-100 transition-all font-bold text-purple-700"
               >
                 <span>Sensory</span>
-                <span className="text-xs bg-slate-200 text-slate-500 px-2 py-1 rounded-full uppercase tracking-wider">Coming Soon</span>
+                <Play size={16} />
               </button>
             </div>
           )}

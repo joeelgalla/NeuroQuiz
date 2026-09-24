@@ -8,3 +8,4 @@ This folder contains two first-sprint iOS tracks:
 
 Use the tracks to compare time-to-TestFlight, native feel, maintenance cost, offline behavior, and how much quiz logic must be duplicated before committing to a long-term iOS direction.
 
+> 2026-09-23: `quiz-data.json` regenerated with 146 questions (new `Sensory Nerve` category, `easyImage` field). The SwiftUI prototype lists the new category; it has no "Easier Mode" toggle and ignores `easyImage`. Capacitor shell picks both up from the web build unchanged.

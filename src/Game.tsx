@@ -9,6 +9,7 @@ interface GameProps {
   direction: Direction;
   displayMode: DisplayMode;
   studyMode?: boolean;
+  easyMode?: boolean;
   customQuestions?: Question[];
   onGameOver: (score: number, total: number, missed: Question[]) => void;
   onQuit: () => void;
@@ -16,12 +17,13 @@ interface GameProps {
 
 const GAME_DURATION = 60;
 
-function questionImage(question?: Question): string | null {
+function questionImage(question?: Question, easyMode = false): string | null {
   if (!question?.image || question.image === 'placeholder') return null;
+  if (easyMode && question.easyImage) return question.easyImage;
   return question.image;
 }
 
-export function Game({ category, direction, displayMode, studyMode = false, customQuestions, onGameOver, onQuit }: GameProps) {
+export function Game({ category, direction, displayMode, studyMode = false, easyMode = false, customQuestions, onGameOver, onQuit }: GameProps) {
   const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
   const [questionDirections, setQuestionDirections] = useState<('forward'|'reverse')[]>([]);
   const [questionDisplayModes, setQuestionDisplayModes] = useState<('text'|'image'|'combined')[]>([]);
@@ -130,7 +132,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
   const displayImage = (() => {
     if (!currentQ) return null;
     if (currentDirection === 'forward' && (currentDisplayMode === 'image' || currentDisplayMode === 'combined')) {
-      return questionImage(currentQ);
+      return questionImage(currentQ, easyMode);
     }
     return null;
   })();
@@ -271,7 +273,13 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
 
     let pool: string[] = [];
     if (currentDirection === 'reverse') {
-      pool = questions.filter(q => q.category === currentQ.category).map(q => q.prompt);
+      // Reverse pool = other prompts in this category, excluding any that share this question's answer
+      // (two L5 images, one nerve drawn from two views: they would be a second correct option marked wrong).
+      // Prefer questions whose option pool overlaps ours (same limb/region) so distractors stay plausible;
+      // fall back to the whole category when that leaves too few.
+      const sameCategory = questions.filter(q => q.category === currentQ.category && q.answer !== currentQ.answer);
+      const related = sameCategory.filter(q => q.options.some(o => currentQ.options.includes(o)));
+      pool = (related.length >= targetCount - 1 ? related : sameCategory).map(q => q.prompt);
     } else {
       pool = [...currentQ.options];
     }
@@ -410,7 +418,11 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
                   {showImageOptions ? (
                     <div className="absolute inset-0 overflow-hidden rounded-2xl">
                       {(() => {
-                        const optionImage = questionImage(questions.find(q => q.prompt === option));
+                        const optionImage = questionImage(
+                          questions.find(q => q.category === currentQ.category && q.prompt === option)
+                            ?? questions.find(q => q.prompt === option), // motor-action tiles reuse Myotome images by prompt
+                          easyMode,
+                        );
                         const dimmed = (selectedAnswer !== null || multiSubmitted) && !isActuallyCorrect && !isSelected && !isMultiSelected;
                         if (!optionImage) {
                           return (

@@ -7,10 +7,11 @@ description: How to add or edit quiz questions correctly
 
 ## Adding a new question
 
-1. **Use the existing ID prefix pattern**: `m` (Myotome), `d` (Dermatome), `b` (Brain Region), `nf` (Nerve forward), `nr` (Nerve reverse). New IDs continue the existing numeric sequence.
+1. **Use the existing ID prefix pattern**: `m` (Myotome), `d` (Dermatome), `b` (Brain Region), `nf` (Nerve forward), `nr` (Nerve reverse), `s` (Sensory Nerve). New IDs continue the existing numeric sequence.
 2. **Place the image first** in `public/drawings/<Category> Final/<optional subfolder>/`, then reference it from `data.ts` with a `/drawings/...` path.
 3. **If no image exists yet**, set `image: 'placeholder'` — the game will fall back to text display.
 4. **Always provide 6 options** in the `options` array (including the correct answer) for forward-direction questions.
+5. **Dermatome questions with a demarcated variant** set `easyImage` to the matching file under `public/drawings/Dermatomes Final/Demarcated/<Anterior|Posterior> Limbs/` (same name with a `D` suffix, e.g. `AArmC6D.png`). Sensory Nerve prompts must be unique within the category (reverse image mode looks images up by prompt).
 
 ## Adding a Nerve Root question
 

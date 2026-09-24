@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url';
 import { questions, type Question } from '../src/data.ts';
 
 const rootDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const validCategories = new Set(['Myotome', 'Dermatome', 'Brain Region', 'Nerve Root']);
+const validCategories = new Set(['Myotome', 'Dermatome', 'Brain Region', 'Nerve Root', 'Sensory Nerve']);
 
 type Issue = {
   level: 'error' | 'warning';
@@ -58,6 +58,9 @@ function validateQuestion(q: Question, seenIds: Map<string, number>): Issue[] {
   if (q.image && !imageExists(q.image)) {
     issues.push({ level: 'error', id, message: `Image path does not resolve under public/: ${q.image}.` });
   }
+  if (q.easyImage && !imageExists(q.easyImage)) {
+    issues.push({ level: 'error', id, message: `easyImage path does not resolve under public/: ${q.easyImage}.` });
+  }
 
   if (q.studyDirection && q.studyDirection !== 'forward' && q.studyDirection !== 'reverse') {
     issues.push({ level: 'error', id, message: `Invalid studyDirection "${q.studyDirection}".` });
@@ -76,6 +79,18 @@ const issues = questions.flatMap(question => validateQuestion(question, seenIds)
 for (const [id, count] of seenIds) {
   if (count > 1) {
     issues.push({ level: 'error', id, message: `Duplicate id appears ${count} times.` });
+  }
+}
+
+// Reverse direction looks images up by prompt within a category, so duplicate prompts would be ambiguous.
+const promptKeys = new Map<string, number>();
+for (const q of questions) {
+  const key = `${q.category} :: ${q.prompt}`;
+  promptKeys.set(key, (promptKeys.get(key) ?? 0) + 1);
+}
+for (const [key, count] of promptKeys) {
+  if (count > 1) {
+    issues.push({ level: 'warning', message: `Prompt appears ${count} times in one category (ambiguous reverse lookup): ${key}.` });
   }
 }
 
