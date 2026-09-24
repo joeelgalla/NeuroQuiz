@@ -22,6 +22,23 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 20:55 EDT - Claude (Fable 5.1, mini) - Gemini visual review → layout fix for the drawings
+
+- Context: Gemini (cc-gemini plugin) reviewed the 12 four-viewport screenshots from the live sweep, measuring in CSS px.
+- Findings and outcome: (1) the question image was capped at ~190 px tall, so a limb drawing rendered 40-50 px
+  wide and the shaded zone was unreadable on every viewport → FIXED (`max-h-[44vh]`, `sm:max-h-[52vh]`; measured
+  after: 293 px tall at 375x667, 371 px at 390x844, 416 px at 1280x800); (2) text option tiles were forced squares
+  (160-170 px on phones), pushing rows below the fold → FIXED (`min-h-[64px]`/`76px`, smaller label size,
+  `overflow-wrap:anywhere`; six tiles now end at y=801 on an 844 px phone, ~30 px below the fold on a 667 px SE);
+  (3) uppercase labels at ~2.5:1 contrast → FIXED (slate-500/600); (4) close "X" hit area → 44 px; (5) after
+  "Next Question" the page could stay scrolled with the image under the header → FIXED (scroll to top on question
+  change); (6) "ghost" tiles from the previous question in some captures = Framer Motion exit animation caught
+  mid-transition by the screenshot timing, not a defect; (7) menu hero slightly tall for a 667 px phone → left
+  as is (cosmetic). Image-option tiles (reverse image mode) keep their 3:4 shape.
+- Output location: commit on `main` (mini), not pushed.
+- Next: Joe: "push it" for the whole round-2 set (content fixes + reverse-mode rule + this layout), then
+  `/code-review ultra 1` once the PR head is refreshed.
+
 ### 2026-09-24 20:25 EDT - Claude (Fable 5.1, mini) - Post-deploy audit round: results + what changed
 
 - Context: Joe asked for every layer of checking before he sends the illustrator the link.

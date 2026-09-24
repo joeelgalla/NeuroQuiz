@@ -22,6 +22,14 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 20:55 EDT - Claude (Fable 5.1, mini) - Question layout: bigger drawing, compact text tiles, contrast
+
+- Files changed: `src/Game.tsx` (image `max-h-[44vh]`/`sm:max-h-[52vh]`; text tiles `min-h-[64px]`/`sm:min-h-[76px]`
+  instead of squares, label `text-[15px]`/`sm:text-base` with `overflow-wrap:anywhere`; 44 px quit button; scroll to
+  top on question change; header label contrast), `src/App.tsx` (label/badge contrast, no-wrap badge).
+- What changed: the drawing is the question; it now gets the height. See HANDOFF 20:55 for the measurements.
+- Verification: tsc clean · build OK · headless measurement at 375/390/1280 (image and tile geometry above).
+
 ### 2026-09-24 20:25 EDT - Claude (Fable 5.1, mini) - Audit-round content fixes + reverse-mode overlap rule
 
 - Files changed: `src/data.ts` (22 questions reworded/relabelled per council + Codex image pass; Intercostobrachial

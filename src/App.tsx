@@ -162,7 +162,7 @@ export default function App() {
           <div className="space-y-8">
             {/* Study Mode Toggle */}
             <div className="space-y-3">
-              <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <label className="text-sm font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
                 <BookOpen size={16} /> Mode
               </label>
               <button
@@ -192,7 +192,7 @@ export default function App() {
             {/* Easier dermatome images (only where dermatome questions can appear) */}
             {(selectedCategory === 'Dermatome' || selectedCategory === 'All') && (
               <div className="space-y-3">
-                <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+                <label className="text-sm font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
                   <Layers size={16} /> Dermatome Images
                 </label>
                 <button
@@ -222,7 +222,7 @@ export default function App() {
 
             {/* Direction Toggle */}
             <div className="space-y-3">
-              <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <label className="text-sm font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
                 <ArrowRightLeft size={16} /> Question Direction
               </label>
               <div className="grid grid-cols-1 gap-3">
@@ -252,7 +252,7 @@ export default function App() {
 
             {/* Display Mode Toggle */}
             <div className="space-y-3">
-              <label className="text-sm font-bold uppercase tracking-wider text-slate-400 flex items-center gap-2">
+              <label className="text-sm font-bold uppercase tracking-wider text-slate-500 flex items-center gap-2">
                 <Settings2 size={16} /> Display Mode
               </label>
               <div className="grid grid-cols-2 gap-3">
@@ -318,7 +318,7 @@ export default function App() {
         </div>
 
         <div className="space-y-4">
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-400 mb-4 text-center">Select a Category</h2>
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500 mb-4 text-center">Select a Category</h2>
           
           <button 
             onClick={() => handleCategorySelect('All')}
@@ -402,7 +402,7 @@ export default function App() {
               </div>
               <span className="font-bold text-lg text-slate-500">Brain Regions</span>
             </div>
-            <span className="text-xs font-bold bg-slate-200 text-slate-500 px-2 py-1 rounded-full uppercase tracking-wider">Coming Soon</span>
+            <span className="text-xs font-bold bg-slate-200 text-slate-600 px-2 py-1 rounded-full uppercase tracking-wider whitespace-nowrap">Coming Soon</span>
           </button>
         </div>
 

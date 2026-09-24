@@ -168,6 +168,7 @@ export function Game({ category, direction, displayMode, studyMode = false, easy
     setMultiSelections([]);
     setMultiSubmitted(false);
     setShowExplanation(false);
+    window.scrollTo({ top: 0 }); // a new question always starts with its image in view
   }, [currentIndex]);
 
   // ── Timer (timed mode only, uses refs to avoid stale closures) ──
@@ -319,13 +320,13 @@ export function Game({ category, direction, displayMode, studyMode = false, easy
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-10">
-        <button onClick={onQuit} className="p-2 -ml-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
+        <button onClick={onQuit} aria-label="Quit" className="min-w-11 min-h-11 -ml-2 flex items-center justify-center text-slate-500 hover:text-slate-700 rounded-full hover:bg-slate-100">
           <X size={24} />
         </button>
 
         <div className="flex items-center gap-6">
           <div className="flex flex-col items-center">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Score</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Score</span>
             <span className="text-xl font-black text-indigo-600">{score}</span>
           </div>
 
@@ -364,11 +365,11 @@ export function Game({ category, direction, displayMode, studyMode = false, easy
         )}
 
         {/* Prompt */}
-        <div className="flex-1 flex flex-col items-center justify-center mb-6 min-h-[140px]">
+        <div className="flex flex-col items-center justify-center mb-5 min-h-[140px]">
           <span className="text-sm font-bold text-indigo-500 uppercase tracking-widest mb-3">{currentQ.category}</span>
           {displayImage ? (
             <div className="flex flex-col items-center gap-4">
-              <img src={displayImage} alt="Anatomy Challenge" className="max-h-48 object-contain rounded-xl shadow-sm" />
+              <img src={displayImage} alt="Anatomy Challenge" className="max-h-[44vh] sm:max-h-[52vh] max-w-full object-contain rounded-xl shadow-sm" />
               {currentDisplayMode === 'combined' && (
                 <h2 className="text-xl sm:text-2xl font-bold text-center text-slate-600 leading-tight">
                   {displayPrompt}
@@ -392,7 +393,7 @@ export function Game({ category, direction, displayMode, studyMode = false, easy
                 ? correctAnswerSet.has(option)
                 : option === expectedAnswer;
 
-              let buttonClass = `relative flex flex-col items-center justify-center ${useImageGrid ? 'aspect-[3/4]' : 'aspect-square'} rounded-2xl border-2 text-lg sm:text-xl font-bold transition-all duration-200 `;
+              let buttonClass = `relative flex flex-col items-center justify-center ${useImageGrid ? 'aspect-[3/4]' : 'min-h-[64px] sm:min-h-[76px]'} rounded-2xl border-2 text-base sm:text-lg font-bold transition-all duration-200 `;
 
               if (isMultiSelect) {
                 if (multiSubmitted) {
@@ -467,7 +468,7 @@ export function Game({ category, direction, displayMode, studyMode = false, easy
                       )}
                     </div>
                   ) : (
-                    <span className="text-center p-3 text-base sm:text-lg">{option}</span>
+                    <span className="text-center px-2 py-3 text-[15px] sm:text-base leading-snug [overflow-wrap:anywhere]">{option}</span>
                   )}
 
                   {/* Feedback Icons — single-select */}
