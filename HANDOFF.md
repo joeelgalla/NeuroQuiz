@@ -22,14 +22,17 @@ Newest entries go on top.
 
 ## Log
 
-### 2026-09-24 19:05 EDT - Claude (Fable 5.1, mini) - PUSHED + LIVE
+### 2026-09-24 19:22 EDT - Claude (Fable 5.1, mini) - PUSHED + LIVE
 
 - Context: Joe: "push it".
-- Communication: `git push origin main` fdd642a..79a977e (3 commits). Vercel rebuilt in ~30 s; the live bundle at
-  https://neuroquiz-rho.vercel.app contains the Sensory Nerve category, Easier Mode and the new labels.
-  Live delivery check: new PNGs served HTTP 200; headless walkthrough against the live URL green, zero page errors.
-- Next: Joe sends the illustrator the link + the one trunk-band note (18:55 entry). Open build items unchanged
-  (brain-region art, PWA manifest, dermatome config direction labels).
+- Communication: `git push origin main` fdd642a..79a977e (3 commits) at 19:22:08 EDT (reflog). Live check
+  polled every 10 s; the third poll (~30 s after the push) returned a new bundle `index-_k1X4SSZ.js` containing
+  "Sensory Nerve", "Easier Mode" and the new labels. New PNGs (sensory, demarcated, trunk) fetched from the live
+  URL with HTTP 200. Headless walkthrough against the live URL: zero page errors.
+- Output location: https://neuroquiz-rho.vercel.app (Vercel prod). Evidence: this session's tool log (bundle grep,
+  curl status lines, walkthrough stdout); nothing written to the repo for a deploy.
+- Next: Joe sends the illustrator the link + the trunk-band note (18:55 entry). He is holding that until the
+  post-deploy audits (council, Codex image pass, live E2E sweep, cloud code review) come back clean.
 
 ### 2026-09-24 18:55 EDT - Claude (Fable 5.1, mini) - Review items CLOSED (no Joe input needed); one ask for the illustrator
 
@@ -42,10 +45,10 @@ Newest entries go on top.
 - For the illustrator, when Joe sends the link: his trunk map has one band too many between the clavicle and the
   nipple (T1 + T2 + T3 + T4 where standard maps have T2, T3, T4). The app skips his "T1" band. If he wants to
   redraw, the fix is to remove that band, not relabel it.
-- Output location: commit on `main` (mini). Not pushed.
-- Next: Joe says "push it".
+- Output location: commit on `main` (mini). Not pushed at the time; pushed 2026-09-24 19:22 (see entry above).
+- Next: Joe says "push it". → done 19:22.
 
-### 2026-09-23 21:10 EDT - Claude (Fable 5.1, mini) - Wiring done + Codex-audited, committed on main (not pushed); review notes for Joe + the illustrator
+### 2026-09-23 21:10 EDT - Claude (Fable 5.1, mini) - Wiring done + Codex-audited, committed on main (pushed 2026-09-24 19:22); review notes for Joe + the illustrator
 
 - Context: Joe said "go" on the 2026-09-07 19:55 plan and asked for a Codex partner audit. The illustrator's
   Sep 7 WhatsApp reply settled item 1: demarcated images = an easier mode, so they are a toggle, not a swap.
@@ -90,8 +93,8 @@ Newest entries go on top.
   T1: Codex agrees it should stay a documented anatomy-review question (drawing-faithful), not an auto relabel.
   Verdict after fixes (self-verified, not re-audited): tsc clean, validator 0/0, build OK, headless walkthrough
   green.
-- Output location: working tree → commit on `main` (mini). Nothing pushed.
-- Next: Joe says "push it" → Vercel deploys → send the illustrator the link with the QA asks above.
+- Output location: working tree → commit on `main` (mini). Nothing pushed at the time; pushed 2026-09-24 19:22.
+- Next: Joe says "push it" → Vercel deploys → send the illustrator the link with the QA asks above. (Pushed 19:22; QA asks superseded by the 18:55 entry.)
 
 ### 2026-09-23 18:40 EDT - Claude (Fable 5.1, mini) - Image inventory VERIFIED against Drive and the live sheet
 
