@@ -22,6 +22,11 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 19:05 EDT - Claude (Fable 5.1, mini) - Deployed
+
+- Files changed: none (deploy event). `main` pushed fdd642a..79a977e; Vercel auto-deploy live.
+- Verification: live bundle contains "Sensory Nerve", "Easier Mode", the new labels; new image paths HTTP 200.
+
 ### 2026-09-24 18:55 EDT - Claude (Fable 5.1, mini) - Naming decisions settled with two advisors; trunk T1 question dropped
 
 - Files changed: `src/data.ts` (d59 removed → 145 questions; s5 answer "Medial Cutaneous Nerves of Arm & Forearm",

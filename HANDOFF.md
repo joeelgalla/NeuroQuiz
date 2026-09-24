@@ -22,6 +22,15 @@ Newest entries go on top.
 
 ## Log
 
+### 2026-09-24 19:05 EDT - Claude (Fable 5.1, mini) - PUSHED + LIVE
+
+- Context: Joe: "push it".
+- Communication: `git push origin main` fdd642a..79a977e (3 commits). Vercel rebuilt in ~30 s; the live bundle at
+  https://neuroquiz-rho.vercel.app contains the Sensory Nerve category, Easier Mode and the new labels.
+  Live delivery check: new PNGs served HTTP 200; headless walkthrough against the live URL green, zero page errors.
+- Next: Joe sends the illustrator the link + the one trunk-band note (18:55 entry). Open build items unchanged
+  (brain-region art, PWA manifest, dermatome config direction labels).
+
 ### 2026-09-24 18:55 EDT - Claude (Fable 5.1, mini) - Review items CLOSED (no Joe input needed); one ask for the illustrator
 
 - Context: Joe (2026-09-24): decide naming/anatomy with references and advisors, don't ask him; modern term first,
