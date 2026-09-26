@@ -25,7 +25,7 @@ Detailed rules live in `.claude/rules/` and load conditionally based on what fil
 
 ## What This Is
 
-A mobile-friendly quiz app for medical students to practice neuroanatomy — myotomes, dermatomes, nerve roots (motor innervation), and brain regions. Fast rounds, visual multiple choice, instant feedback, timer, score tracking. Modeled after "Amino Acid Quiz."
+A mobile-friendly quiz app for medical students to practice neuroanatomy — myotomes, dermatomes (limbs + trunk), peripheral nerves (motor innervation and sensory/cutaneous distributions), and brain regions. Fast rounds, visual multiple choice, instant feedback, timer, score tracking. Modeled after "Amino Acid Quiz."
 
 **Long-term goal:** App Store publication (iOS + Android via Capacitor). **Near-term:** shareable web app for Joe's medical school team.
 
@@ -34,17 +34,28 @@ A mobile-friendly quiz app for medical students to practice neuroanatomy — myo
 - **Joseph Elgallad** — Y2 MD student at UofT Temerty. Owns the project, curates anatomical accuracy.
 - **Joe's friend** — drew all illustration assets (myotome action drawings + dermatome zone overlays).
 - **Med school team** — collaborating colleagues being added as GitHub collaborators.
-- **AI agents** — Claude Code (terminal) + Gemini 3.1 Pro (Antigravity sidebar). See workflow below.
+- **AI agents** — Claude Code (terminal), Codex, and Gemini 3.1 Pro (Antigravity sidebar). See workflow below.
 
 ## Development Environment: Antigravity IDE
 
 Built inside **Google's Antigravity IDE** (a VS Code fork with an agent sidebar running Gemini 3.1 Pro). Multi-agent workflow:
 
 - **Claude Code in the integrated terminal** — planning, auditing, data integrity checks, architectural decisions, CLI commands
+- **Codex** — implementation, tests, audits, PWA/analytics work, build/debug loops, and shell-heavy tasks
 - **Gemini agent in the Antigravity sidebar** — rapid code generation, UI iteration, bulk file edits, visual preview
 - **They cannot directly communicate.** No MCP bridge between them. The filesystem IS the bridge.
 - **CLAUDE.md and AGENTS.md are the shared brain.** Antigravity reads `AGENTS.md`; Claude Code reads `CLAUDE.md`. A pre-commit hook keeps them in sync.
 - **Common workflow:** Claude Code plans → Gemini implements → Claude Code audits.
+
+## Multi-Agent Coordination
+
+- `AGENTS.md` and `CLAUDE.md` are synced twins in this repo. Keep them aligned so Claude, Codex, and Antigravity see the same rules.
+- Before editing, run `git status --short` and inspect recent commits. Do not overwrite dirty files you did not create.
+- Check port 3000 before starting `npm run dev`; reuse an existing Vite server when possible.
+- `HANDOFF.md` is required for reviews, plans, coordination, blockers, and other non-code-changing communication.
+- `CHANGELOG.md` is required for actual completed changes to code, config, data, assets, build/deploy rules, or project instructions.
+- `.agent-lock` is not a default requirement. Use a narrow temporary lock only if real overlapping edits or collisions start happening.
+- Codex is well-suited for implementation, audits, tests, PWA work, analytics, and data-shape cleanup. Antigravity remains best for rapid visual/UI iteration.
 
 ## Tech Stack — Use These, Not Alternatives
 
@@ -84,8 +95,12 @@ NeuroQuiz/
 ├── public/drawings/
 │   ├── Myotomes Final/         # 33 PNGs (29 individual actions + 4 summary sheets)
 │   ├── Dermatomes Final/
-│   │   ├── Anterior/           # 13 PNGs (C4-T2, L1-S1)
-│   │   └── Posterior/          # 18 PNGs (C4-T2, L1-S5)
+│   │   ├── Anterior/           # 15 PNGs (C4-T2, L1-S1 + master sheets)
+│   │   ├── Posterior/          # 20 PNGs (C4-T2, L1-S5 + master sheets)
+│   │   └── Demarcated/         # Same zones with neighbouring borders drawn (Easier Mode) + Trunk/ T1-T12
+│   ├── Peripheral Nerves Final/
+│   │   ├── Anterior Limbs/     # 16 cutaneous-distribution PNGs + 2 labelled master sheets
+│   │   └── Posterior Limbs/    # 17 cutaneous-distribution PNGs + 2 labelled master sheets
 │   ├── Myotomes blank/         # Blank templates (not used in quiz)
 │   └── Dermatomes blank/       # Blank templates (not used in quiz)
 └── src/
@@ -94,7 +109,7 @@ NeuroQuiz/
     ├── Game.tsx            # Quiz engine (single + multi-select, timed + study mode)
     ├── Review.tsx          # Post-game: score, missed questions, "Practice Missed"
     ├── AdminPanel.tsx      # Password-protected asset editor (local only)
-    ├── data.ts             # 101 questions across 4 categories + Question interface
+    ├── data.ts             # 145 questions across 5 categories + Question interface
     ├── data.backup.ts      # Auto-created backup on Admin Panel publish — DO NOT TOUCH
     └── index.css           # @import "tailwindcss"
 ```
@@ -107,13 +122,14 @@ NeuroQuiz/
 
 **Display Mode:** Text Only / Image Only / Alternating / Combined.
 
+**Easier Mode (dermatomes):** config-screen toggle that swaps limb dermatome images for the demarcated variants (neighbouring borders drawn). Persisted per device.
+
 **Practice Missed:** Review screen offers a button → relaunch in study mode with only the missed questions.
 
 ## Known Gaps / Upcoming Work
 
 - ❌ **Brain Region images** — 12 questions still use `placeholder`
-- ❌ **Sensory nerve images** — not yet created or integrated
-- ❌ **Explanations** — field exists but no questions populated yet (use Admin Panel to add)
+- ❌ **Explanations** — only the 5 canonical trunk-dermatome landmarks (T2/T4/T6/T10/T12) are populated; everything else empty (use Admin Panel to add)
 - ❌ **Spaced repetition** — no per-question performance tracking (Phase 2)
 - ❌ **Analytics** — no accuracy-by-category or trends over time (Phase 2)
 - ❌ **PWA** — no manifest.json, favicon, or theme-color (Phase 3)
@@ -144,6 +160,14 @@ The Changelog below is for **major milestones only** — a new system being adde
 ---
 
 ## Changelog
+
+### 2026-09-23 — Sensory Nerves, Trunk Dermatomes, Easier Mode
+
+- New `Sensory Nerve` category: 33 cutaneous-distribution questions (s1–s33) from the illustrator's Aug 30 drawings; the "Sensory" button under Peripheral Nerves is live
+- 11 trunk dermatome questions (d60–d70, T2–T12) with landmark prompts; the illustrator's sub-clavicular "T1" band is kept as an image but not quizzed (standard maps put T2 there)
+- `easyImage` field on `Question` + "Easier Mode" toggle on the config screen (demarcated dermatome images with neighbouring borders); Admin Panel, save-data serializer and validator updated in step
+- Reverse-direction option pool now excludes prompts that share the current question's answer
+- Repo moved to the mini (`~/Projects/NeuroQuiz`, canonical since 2026-09-07); the May iOS sprint was snapshotted as its own commit
 
 ### 2026-04-14 — Modular Rules Migration
 

@@ -37,6 +37,14 @@ function adminApiPlugin(): Plugin {
       };
 
       server.middlewares.use(async (req, res, next) => {
+        // ─── POST /api/admin-auth ───
+        if (req.url === '/api/admin-auth' && req.method === 'POST') {
+          if (!checkAuth(req, res)) return;
+          res.writeHead(200, { 'Content-Type': 'application/json' });
+          res.end(JSON.stringify({ success: true }));
+          return;
+        }
+
         // ─── GET /api/list-images ───
         if (req.url === '/api/list-images' && req.method === 'GET') {
           try {
@@ -153,6 +161,9 @@ function adminApiPlugin(): Plugin {
               if (q.image) {
                 parts.push(`image: ${JSON.stringify(q.image)}`);
               }
+              if (q.easyImage) {
+                parts.push(`easyImage: ${JSON.stringify(q.easyImage)}`);
+              }
               if (q.answers) {
                 parts.push(`answers: ${JSON.stringify(q.answers)}`);
               }
@@ -174,7 +185,7 @@ function adminApiPlugin(): Plugin {
               return parts.join(', ') + ' }';
             }).join(',\n');
 
-            const fileContent = `export type Category = 'Myotome' | 'Dermatome' | 'Brain Region' | 'Nerve Root';
+            const fileContent = `export type Category = 'Myotome' | 'Dermatome' | 'Brain Region' | 'Nerve Root' | 'Sensory Nerve';
 
 export interface Question {
   id: string;
@@ -183,6 +194,7 @@ export interface Question {
   answer: string;
   options: string[];
   image?: string;
+  easyImage?: string;        // Optional easier variant of image (dermatomes: neighbouring borders drawn)
   // Multi-select support (nerve motor questions)
   answers?: string[];
   multiSelect?: boolean;

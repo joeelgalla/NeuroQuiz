@@ -9,6 +9,7 @@ interface GameProps {
   direction: Direction;
   displayMode: DisplayMode;
   studyMode?: boolean;
+  easyMode?: boolean;
   customQuestions?: Question[];
   onGameOver: (score: number, total: number, missed: Question[]) => void;
   onQuit: () => void;
@@ -16,7 +17,32 @@ interface GameProps {
 
 const GAME_DURATION = 60;
 
-export function Game({ category, direction, displayMode, studyMode = false, customQuestions, onGameOver, onQuit }: GameProps) {
+function answerAtoms(answer: string): string[] {
+  const atoms: string[] = [];
+  for (const part of answer.split(',').map(s => s.trim()).filter(Boolean)) {
+    const range = part.match(/^([CTLS])(\d+)-([CTLS])(\d+)$/);
+    if (range && range[1] === range[3]) {
+      for (let i = Number(range[2]); i <= Number(range[4]); i++) atoms.push(`${range[1]}${i}`);
+    } else {
+      atoms.push(part);
+    }
+  }
+  return atoms;
+}
+
+function answersOverlap(a: string, b: string): boolean {
+  if (a === b) return true;
+  const atomsB = new Set(answerAtoms(b));
+  return answerAtoms(a).some(atom => atomsB.has(atom));
+}
+
+function questionImage(question?: Question, easyMode = false): string | null {
+  if (!question?.image || question.image === 'placeholder') return null;
+  if (easyMode && question.easyImage) return question.easyImage;
+  return question.image;
+}
+
+export function Game({ category, direction, displayMode, studyMode = false, easyMode = false, customQuestions, onGameOver, onQuit }: GameProps) {
   const [gameQuestions, setGameQuestions] = useState<Question[]>([]);
   const [questionDirections, setQuestionDirections] = useState<('forward'|'reverse')[]>([]);
   const [questionDisplayModes, setQuestionDisplayModes] = useState<('text'|'image'|'combined')[]>([]);
@@ -125,10 +151,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
   const displayImage = (() => {
     if (!currentQ) return null;
     if (currentDirection === 'forward' && (currentDisplayMode === 'image' || currentDisplayMode === 'combined')) {
-      if (currentQ.image === 'placeholder') {
-        return `https://placehold.co/600x400/f1f5f9/64748b?text=Missing+Image%5Cn${encodeURIComponent(currentQ.prompt)}`;
-      }
-      return currentQ.image || null;
+      return questionImage(currentQ, easyMode);
     }
     return null;
   })();
@@ -145,6 +168,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
     setMultiSelections([]);
     setMultiSubmitted(false);
     setShowExplanation(false);
+    window.scrollTo({ top: 0 }); // a new question always starts with its image in view
   }, [currentIndex]);
 
   // ── Timer (timed mode only, uses refs to avoid stale closures) ──
@@ -269,7 +293,15 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
 
     let pool: string[] = [];
     if (currentDirection === 'reverse') {
-      pool = questions.filter(q => q.category === currentQ.category).map(q => q.prompt);
+      // Reverse pool = other prompts in this category, excluding any that share this question's answer
+      // (two L5 images, one nerve drawn from two views: they would be a second correct option marked wrong).
+      // Prefer questions whose option pool overlaps ours (same limb/region) so distractors stay plausible;
+      // fall back to the whole category when that leaves too few.
+      // "Same answer" is judged on answer atoms so root lists overlap too: showing "C8" must not offer a
+      // "C8, T1" action as a wrong option, and "C6-C8" expands to C6, C7, C8. Nerve names compare whole.
+      const sameCategory = questions.filter(q => q.category === currentQ.category && !answersOverlap(q.answer, currentQ.answer));
+      const related = sameCategory.filter(q => q.options.some(o => currentQ.options.includes(o)));
+      pool = (related.length >= targetCount - 1 ? related : sameCategory).map(q => q.prompt);
     } else {
       pool = [...currentQ.options];
     }
@@ -288,13 +320,13 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
     <div className="min-h-screen bg-slate-50 text-slate-900 flex flex-col font-sans">
       {/* Header */}
       <header className="bg-white border-b border-slate-200 p-4 flex items-center justify-between sticky top-0 z-10">
-        <button onClick={onQuit} className="p-2 -ml-2 text-slate-400 hover:text-slate-600 rounded-full hover:bg-slate-100">
+        <button onClick={onQuit} aria-label="Quit" className="min-w-11 min-h-11 -ml-2 flex items-center justify-center text-slate-500 hover:text-slate-700 rounded-full hover:bg-slate-100">
           <X size={24} />
         </button>
 
         <div className="flex items-center gap-6">
           <div className="flex flex-col items-center">
-            <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Score</span>
+            <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">Score</span>
             <span className="text-xl font-black text-indigo-600">{score}</span>
           </div>
 
@@ -333,11 +365,11 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
         )}
 
         {/* Prompt */}
-        <div className="flex-1 flex flex-col items-center justify-center mb-6 min-h-[140px]">
+        <div className="flex flex-col items-center justify-center mb-5 min-h-[140px]">
           <span className="text-sm font-bold text-indigo-500 uppercase tracking-widest mb-3">{currentQ.category}</span>
           {displayImage ? (
             <div className="flex flex-col items-center gap-4">
-              <img src={displayImage} alt="Anatomy Challenge" className="max-h-48 object-contain rounded-xl shadow-sm" />
+              <img src={displayImage} alt="Anatomy Challenge" className="max-h-[44vh] sm:max-h-[52vh] max-w-full object-contain rounded-xl shadow-sm" />
               {currentDisplayMode === 'combined' && (
                 <h2 className="text-xl sm:text-2xl font-bold text-center text-slate-600 leading-tight">
                   {displayPrompt}
@@ -361,7 +393,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
                 ? correctAnswerSet.has(option)
                 : option === expectedAnswer;
 
-              let buttonClass = `relative flex flex-col items-center justify-center ${useImageGrid ? 'aspect-[3/4]' : 'aspect-square'} rounded-2xl border-2 text-lg sm:text-xl font-bold transition-all duration-200 `;
+              let buttonClass = `relative flex flex-col items-center justify-center ${useImageGrid ? 'aspect-[3/4]' : 'min-h-[64px] sm:min-h-[76px]'} rounded-2xl border-2 text-base sm:text-lg font-bold transition-all duration-200 `;
 
               if (isMultiSelect) {
                 if (multiSubmitted) {
@@ -407,17 +439,28 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
                 >
                   {showImageOptions ? (
                     <div className="absolute inset-0 overflow-hidden rounded-2xl">
-                      <img
-                        src={(() => {
-                          const qImage = questions.find(q => q.prompt === option)?.image;
-                          if (!qImage || qImage === 'placeholder') return `https://placehold.co/400x400/e2e8f0/475569?text=${encodeURIComponent(option)}`;
-                          return qImage;
-                        })()}
-                        alt="Anatomical option"
-                        className={`w-full h-full object-contain transition-opacity ${
-                          (selectedAnswer !== null || multiSubmitted) && !isActuallyCorrect && !isSelected && !isMultiSelected ? 'opacity-50' : ''
-                        }`}
-                      />
+                      {(() => {
+                        const optionImage = questionImage(
+                          questions.find(q => q.category === currentQ.category && q.prompt === option)
+                            ?? questions.find(q => q.prompt === option), // motor-action tiles reuse Myotome images by prompt
+                          easyMode,
+                        );
+                        const dimmed = (selectedAnswer !== null || multiSubmitted) && !isActuallyCorrect && !isSelected && !isMultiSelected;
+                        if (!optionImage) {
+                          return (
+                            <div className={`w-full h-full bg-slate-100 text-slate-600 flex items-center justify-center p-3 text-center text-sm font-bold transition-opacity ${dimmed ? 'opacity-50' : ''}`}>
+                              {option}
+                            </div>
+                          );
+                        }
+                        return (
+                          <img
+                            src={optionImage}
+                            alt="Anatomical option"
+                            className={`w-full h-full object-contain transition-opacity ${dimmed ? 'opacity-50' : ''}`}
+                          />
+                        );
+                      })()}
                       {isMultiSelect && (
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent pointer-events-none flex items-end justify-center pb-2">
                            <span className="text-white text-xs font-bold text-center px-1 drop-shadow-md">{option}</span>
@@ -425,7 +468,7 @@ export function Game({ category, direction, displayMode, studyMode = false, cust
                       )}
                     </div>
                   ) : (
-                    <span className="text-center p-3 text-base sm:text-lg">{option}</span>
+                    <span className="text-center px-2 py-3 text-[15px] sm:text-base leading-snug [overflow-wrap:anywhere]">{option}</span>
                   )}
 
                   {/* Feedback Icons — single-select */}
